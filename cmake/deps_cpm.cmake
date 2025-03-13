@@ -11,3 +11,9 @@ CPMAddPackage(
     "CATCH_BUILD_EXTRA_TESTS OFF"
     "CATCH_BUILD_FUZZERS OFF"
 )
+
+CPMAddPackage(
+    NAME nlohmann_json
+    GITHUB_REPOSITORY nlohmann/json
+    GIT_TAG v3.9.1
+)
