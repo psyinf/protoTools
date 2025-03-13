@@ -22,9 +22,10 @@ struct FieldDescriptor
     FieldId                determinesSizeOf; ///< name of the field's size that is determined by this field
     FieldId sizeDeterminesExistenceOf;       ///< if this field's value is zero, the referenced field has size 0
     bool    isHeaderValue; ///< true if the field is a header value and needs to be checked against its initial value
+    int16_t sizeOffset{};  ///< offset to be added to the size of the field
 
     // monadic methods
-    FieldDescriptor& withDeterminedSizeOf(std::string_view field_name);
+    FieldDescriptor& withDeterminesSizeOf(std::string_view field_name, int16_t sizeOffset = 0);
 
     FieldDescriptor& withSizeDeterminesExistenceOf(std::string_view field_name);
 
