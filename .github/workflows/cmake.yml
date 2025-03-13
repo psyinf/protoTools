@@ -18,13 +18,12 @@ jobs:
   build:
     strategy:
       matrix:
-        #version: [10, 12, 14]
         os: [ubuntu-latest]
     runs-on: ${{ matrix.os }}
     steps:
     - name: Set up cache
       id: cache-cpm
-      uses: actions/cache@v2
+      uses: actions/cache@v4
       with:
        path: ~/cpm-cache
        key: ${{ runner.os }}-cpm-${{ hashFiles('**/') }}

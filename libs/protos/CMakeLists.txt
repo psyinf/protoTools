@@ -1,13 +1,16 @@
-project(sampleLib)
+project(protos)
+set(CMAKE_CXX_STANDARD 23)
+file(GLOB_RECURSE HEADER_FILES 	CONFIGURE_DEPENDS "*.h*")
+file(GLOB_RECURSE CPP_FILES 	CONFIGURE_DEPENDS "*.cpp")
 
 add_library(${PROJECT_NAME} STATIC)
 add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 
 target_sources(${PROJECT_NAME}
     PRIVATE
-    core/lib.cpp
+    ${CPP_FILES}
     PUBLIC
-    core/lib.hpp
+    ${HEADER_FILES}
 
 )
 

@@ -1,7 +1,6 @@
-#include <sampleLib/core/lib.hpp>
+#include <protos/FieldDescriptor.hpp>
 
 int main([[maybe_unused]] int argc, [[maybe_unused]] char** argv)
 {
-    sampleLib::hello_world();
     return 0;
 }
