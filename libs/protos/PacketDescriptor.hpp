@@ -1,13 +1,11 @@
 #pragma once
 #include <protos/FieldDescriptor.hpp>
-
-#include <ranges>
+#include <protos/BitUtils.hpp>
 #include <stdexcept>
 #include <string>
-#include <string_view>
 #include <vector>
 
-namespace protos{
+namespace protos {
 
 // describes a packet as fields of bytes with an associated name, type and further contextual information
 struct PacketDescriptor
@@ -24,7 +22,15 @@ struct PacketDescriptor
         return *iter;
     }
 
+    template <typename T>
+    protos::PacketDescriptor& set(const std::string& fieldName, const T& value)
+    {
+        auto& field = get(fieldName);
+        field.value = protos::bytes::toBytes(value, field.size);
+        return *this;
+    }
+
     auto getName() const { return name; }
 };
 
-} // namespace protos::
+} // namespace protos
