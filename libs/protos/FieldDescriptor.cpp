@@ -7,9 +7,10 @@ protos::FieldDescriptor& protos::FieldDescriptor::withDeterminedSizeOf(std::stri
     return *this;
 }
 
-protos::FieldDescriptor& protos::FieldDescriptor::withIsHeaderValue(bool is_header_value)
+protos::FieldDescriptor& protos::FieldDescriptor::withIsHeaderValue(bool is_header_value, std::vector<std::byte>&& value)
 {
     isHeaderValue = is_header_value;
+    this->value = std::move(value);
     return *this;
 }
 
