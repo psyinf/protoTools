@@ -1,9 +1,10 @@
 #include "FieldDescriptor.hpp"
 
 
-protos::FieldDescriptor& protos::FieldDescriptor::withDeterminedSizeOf(std::string_view field_name)
+protos::FieldDescriptor& protos::FieldDescriptor::withDeterminesSizeOf(std::string_view field_name, int16_t sizeOffset)
 {
     determinesSizeOf = field_name;
+    this->sizeOffset = sizeOffset;
     return *this;
 }
 

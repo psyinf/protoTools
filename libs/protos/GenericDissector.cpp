@@ -66,7 +66,7 @@ std::optional<protos::PacketData> protos::dissector::GenericDissector::addByte(c
         if (!field.determinesSizeOf.empty())
         {
             auto& ref_field = getFieldInStack(field.determinesSizeOf);
-            ref_field.size = getSizeFromFieldValue(field);
+            ref_field.size = getSizeFromFieldValue(field) + field.sizeOffset;
         }
 
         if (!field.sizeDeterminesExistenceOf.empty())
