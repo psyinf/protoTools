@@ -35,7 +35,7 @@ struct FieldDescriptor
 
     static auto make(std::string_view name, std::string_view description, uint16_t size) -> FieldDescriptor
     {
-        return FieldDescriptor{name, description, size};
+        return FieldDescriptor{ name, description, size, std::vector<std::byte>(size)};
     }
 };
 

@@ -16,6 +16,13 @@ constexpr T as_number(const std::span<const std::byte>& container)
     if (container.size() != sizeof(T)) { throw std::runtime_error("Invalid size"); }
     return *std::bit_cast<T*>(container.data());
 }
+template <class T>
+constexpr auto asBytes(const T& value)
+{
+    // vector of bytes
+    return std::vector<std::byte>(reinterpret_cast<const std::byte*>(&value),
+                                  reinterpret_cast<const std::byte*>(&value) + sizeof(T));
+}
 
 /**
  * Convert a number of type T to a span of bytes
@@ -31,4 +38,6 @@ std::vector<std::byte> toBytes(T value, size_t width)
     std::memcpy(bytes.data(), &value, width);
     return bytes;
 }
+
+
 } // namespace protos::bytes
