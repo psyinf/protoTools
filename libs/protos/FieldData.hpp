@@ -7,11 +7,12 @@
 
 namespace protos {
 
-/* A named field with a value inside a packet */
+/* An immutable data structure representing a field in a packet */
+
 struct FieldData
 {
-    std::string            name;
-    std::vector<std::byte> value;
+    const std::string            name;
+    const std::vector<std::byte> value;
 };
 
 } // namespace protos

@@ -30,6 +30,17 @@ struct PacketDescriptor
         return *this;
     }
 
+    template<>
+    protos::PacketDescriptor& set(const std::string& fieldName, const std::vector<std::byte>& value)
+    {
+       
+        auto& field = get(fieldName);
+        if (field.size != value.size() && field.size != 0) { throw std::runtime_error("Size mismatch"); }
+        field.value = value;
+        field.size = value.size();
+        return *this;
+    }
+
     auto getName() const { return name; }
 };
 
