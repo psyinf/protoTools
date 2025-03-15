@@ -81,7 +81,7 @@ std::optional<protos::PacketData> protos::dissector::GenericDissector::addByte(c
         current_message_buffer.clear();
 
         return current_packet;
-    } 
+    }
     else { return std::nullopt; }
 }
 
@@ -116,8 +116,25 @@ uint32_t protos::dissector::GenericDissector::getSizeFromFieldValue(const protos
     case 8:
         return protos::bytes::as_number<uint64_t>(current_packet.get(field.name).value);
     default:
-        throw std::runtime_error(std::format("Unsupported size for field describing a size in field '{}' of GenericDissector '{}' ", field.name, this->packet_template.getName() ));
+        throw std::runtime_error(
+            std::format("Unsupported size for field describing a size in field '{}' of GenericDissector '{}' ",
+                        field.name,
+                        this->packet_template.getName()));
     }
 }
 
+bool protos::dissector::GenericDissector::matchesHeader(const std::vector<std::byte>& header) const
+{
+    if (stackIsEmpty()) { return false; }
+    const auto& top = stackTop();
 
+    if (header.size() < top.size) { return false; }
+
+    if (top.isHeaderValue)
+    {
+        // get a span of the header with the same size as the header
+        auto header_span = std::vector(header.begin(), header.begin() + top.size);
+        return header_span == top.value;
+    }
+    return false;
+}

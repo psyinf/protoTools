@@ -24,7 +24,7 @@ public:
     
     
     std::optional<protos::PacketData>  addByte(const std::byte b);
-
+    bool matchesHeader(const std::vector<std::byte>& header) const;
 protected:
     
 
@@ -35,6 +35,8 @@ protected:
     protos::FieldDescriptor& getFieldInStack(std::string_view name);
 
     protos::FieldDescriptor& stackTop() { return current_packet_stack.front(); }
+
+    const protos::FieldDescriptor& stackTop() const { return current_packet_stack.front(); }
 
     uint32_t getSizeFromFieldValue(const protos::FieldDescriptor& field);
 
