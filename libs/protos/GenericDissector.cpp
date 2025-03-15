@@ -125,9 +125,7 @@ uint32_t protos::dissector::GenericDissector::getSizeFromFieldValue(const protos
 
 bool protos::dissector::GenericDissector::matchesHeader(const std::vector<std::byte>& header) const
 {
-    if (stackIsEmpty()) { return false; }
-    const auto& top = stackTop();
-
+    auto top = packet_template.fields.front();
     if (header.size() < top.size) { return false; }
 
     if (top.isHeaderValue)

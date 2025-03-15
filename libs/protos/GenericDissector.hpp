@@ -24,6 +24,7 @@ public:
     
     
     std::optional<protos::PacketData>  addByte(const std::byte b);
+    // check if a potential header in the PacketDescriptor matches the given header.
     bool matchesHeader(const std::vector<std::byte>& header) const;
 protected:
     
