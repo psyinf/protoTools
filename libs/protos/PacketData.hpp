@@ -2,7 +2,7 @@
 #include <protos/FieldData.hpp>
 #include <format>
 
-namespace protos{
+namespace protos {
 
 // describes structure of a byte-oriented packet of fields.
 struct PacketData
@@ -21,7 +21,7 @@ struct PacketData
         else { throw std::runtime_error(std::format("Field {} not found in PacketData {}", field_name, name)); }
     }
 
-    const FieldData& get(const std::string& field_name) const { return get(field_name); }
+    const FieldData& get(const std::string& field_name) const { return const_cast<PacketData*>(this)->get(field_name); }
 
     bool has(const std::string& field_name) const
     {
