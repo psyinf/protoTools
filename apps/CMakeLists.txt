@@ -1,1 +1,6 @@
 add_subdirectory(_template)
+#add_subdirectory(CanTest)
+add_subdirectory(ProtocolPusher)
+add_subdirectory(ProtocolClient)
+add_subdirectory(ProtocolDemoServer)
+add_subdirectory(ProtoProxy)
