@@ -8,8 +8,7 @@
 int main([[maybe_unused]] int argc, [[maybe_unused]] char** argv)
 try
 {
-    ProtoUtils     utils;
-    ProtoPublisher pub1(utils.makeContext(1));
+    ProtoPublisher pub1(ProtoUtils::makeContext(1));
     pub1.bind({"tcp://*:5555"});
     
     size_t counter = 0;

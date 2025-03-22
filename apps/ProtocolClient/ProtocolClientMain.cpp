@@ -14,8 +14,7 @@ static char input()
 int main([[maybe_unused]] int argc, [[maybe_unused]] char** argv)
 try
 {
-    ProtoUtils  utils;
-    ProtoClient                     sub( utils.makeContext(1));
+    ProtoClient                     sub( ProtoUtils::makeContext(1));
     //sub.bind({"tcp://127.0.0.1:55556", "tcp://127.0.0.1:51001"});
     sub.bind({ "tcp://127.0.0.1:41000", "tcp://127.0.0.1:41001" });
     sub.subscribe("TSI");
