@@ -25,7 +25,7 @@ try
         std::jthread{[&]() {
             while (true)
             {
-                auto r = sub.receive();
+                auto r = sub.receiveSubscribed();
                 std::cout << "Received: " << r.header.protocol_name << " " << r.header.adapter_descriptor << std::endl;
                 std::cout << std::string(r.data.data.begin(), r.data.data.end()) << std::endl;
             }
@@ -42,13 +42,13 @@ try
             }
             case 's': {
                 std::string data = std::format("Hullo {}", int(0));
-                sub.send({"SEND", "CAN", data});
+                sub.sendCommand({"SEND", "CAN", data});
                 std::cout << "Sent package" << std::endl;
                 break;
             }
             case 'c': {
                 std::string data = std::format("Hullo {}", int(0));
-                sub.send({"CONNECT", "CAN_USB", data});
+                sub.sendCommand({"CONNECT", "CAN_USB", data});
                 std::cout << "Sent package" << std::endl;
                 break;
             }

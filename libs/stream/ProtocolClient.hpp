@@ -26,9 +26,9 @@ public:
 
     void subscribe(const std::string& topic);
 
-    void send(const Command& cmd);
+    CommandReply sendCommand(const Command& cmd);
 
-    ProtoPackage receive();
+    ProtoPackage receiveSubscribed();
 
 private:
     std::unique_ptr<zmq::socket_t>  _sub_socket;
