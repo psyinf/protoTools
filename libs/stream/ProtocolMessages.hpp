@@ -14,11 +14,20 @@ struct ProtoHeader
     std::string adapter_descriptor; ///< Descriptor of the adapter, e.g. USB-CANmodul
 };
 
-struct SubscriberCommand
+/**
+ * @brief Command being sent via REQ/PUSH
+ */
+struct Command
 {
     std::string command_verb;     ///< Verb of the command, e.g. "send_to"
     std::string command_receiver; ///< Receiver of the command, e.g. "CAN"
     std::string command_data;     ///< Data of the command
+};
+
+struct CommandReply
+{
+    std::string reply_verb; ///< Verb of the reply, e.g. "OK"
+    std::string reply_data;     ///< Data of the command
 };
 
 struct ProtoData

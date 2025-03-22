@@ -4,6 +4,10 @@
 #include <stream/ProtocolMessages.hpp>
 
 #include <iostream>
+#include <chrono>
+#include <thread>
+#include <format>
+#include <spdlog/spdlog.h>
 
 class DemoProtocol
 {
@@ -26,21 +30,6 @@ public:
         spdlog::info("Sending message: {}", message);
     }
 
-    void run(std::shared_ptr<zmq::context_t> context)
-    {
-        // start a thread that sends messages
-        std::jthread{[&]() {
-            zmq::socket_t cmd_socket(*context, zmq::socket_type::push);
-            cmd_socket.connect("inproc://proxy");
-
-            while (true)
-            {
-                sendMessage(getMessage());
-            }
-        }}.detach();
-
-        
-    }
 
 private:
     const std::string _protocolName;
@@ -55,10 +44,11 @@ try
 
     ProtocolServer server({ "CAN" ,"CAN_USB"});
     server.bind("tcp://127.0.0.1:55555", true);
-    server.setSendCallback([&p1](const SubscriberCommand& cmd) {
+    server.setCommandCallback([&p1](const Command& cmd) {
         spdlog::info("Received command: {}:{}:{}", cmd.command_verb, cmd.command_receiver, cmd.command_data);
+        return CommandReply{cmd.command_verb, "ACK"};
     });
-    server.run("tcp://*:51001");
+    server.startCommandHandler("tcp://*:51001");
 
     spdlog::info("Server started");
     // fire up a proxy
@@ -67,7 +57,7 @@ try
     {
         auto m = p1.getMessage();
         spdlog::info("Message: {}", m);
-        server.send({std::vector<char>(m.begin(), m.end())});
+        server.publish({std::vector<char>(m.begin(), m.end())});
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     }
     return 0;
