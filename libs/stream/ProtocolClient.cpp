@@ -1,27 +1,27 @@
 #include "ProtocolClient.hpp"
 #include <spdlog/spdlog.h>
 #include <zmq.hpp>
-ProtoClient::~ProtoClient() = default;
+ProtocolClient::~ProtocolClient() = default;
 
-ProtoClient::ProtoClient(std::shared_ptr<zmq::context_t> context_ptr)
+ProtocolClient::ProtocolClient(std::shared_ptr<zmq::context_t> context_ptr)
 {
     _context_ptr = context_ptr;
     _sub_socket = std::make_unique<zmq::socket_t>(*context_ptr, zmq::socket_type::sub);
     _cmd_socket = std::make_unique<zmq::socket_t>(*_context_ptr, zmq::socket_type::req);
 }
 
-void ProtoClient::bind(const ProtoClientConfig& config)
+void ProtocolClient::bind(const ProtoClientConfig& config)
 {
     _sub_socket->connect(config.sub_endpoint);
     _cmd_socket->connect(config.req_endpoint);
 }
 
-void ProtoClient::subscribe(const std::string& topic)
+void ProtocolClient::subscribe(const std::string& topic)
 {
     _sub_socket->set(zmq::sockopt::subscribe, topic);
 }
 
-CommandReply ProtoClient::sendCommand(const Command& cmd)
+CommandReply ProtocolClient::sendCommand(const Command& cmd)
 {
     // format header
 
@@ -40,7 +40,7 @@ CommandReply ProtoClient::sendCommand(const Command& cmd)
 
 }
 
-ProtoPackage ProtoClient::receiveSubscribed()
+ProtoPackage ProtocolClient::receiveSubscribed()
 {
     zmq::message_t header_msg;
     std::ignore = _sub_socket->recv(header_msg);
