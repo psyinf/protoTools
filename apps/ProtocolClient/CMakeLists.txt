@@ -12,9 +12,6 @@ target_link_libraries(${PROJECT_NAME}
     PUBLIC
 	protos::protos
     protos::protos_streams
-    #nlohmann_json::nlohmann_json
-    cppzmq-static
-    libzmq-static
     spdlog::spdlog
 )
 target_include_directories(${PROJECT_NAME}

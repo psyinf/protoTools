@@ -2,14 +2,14 @@
 #include <format>
 #include <stdexcept>
 #include <thread>
-#include <zmq.hpp>
 #include <stream/ProtoPublisher.hpp>
+#include <stream/ProtoUtils.hpp>
 
 int main([[maybe_unused]] int argc, [[maybe_unused]] char** argv)
 try
 {
-    std::shared_ptr<zmq::context_t> context = std::make_shared<zmq::context_t>(1);
-    ProtoPublisher pub1(context);
+    ProtoUtils     utils;
+    ProtoPublisher pub1(utils.makeContext(1));
     pub1.bind({"tcp://*:5555"});
     
     size_t counter = 0;

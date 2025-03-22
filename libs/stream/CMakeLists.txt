@@ -15,11 +15,15 @@ target_sources(${PROJECT_NAME}
     ${CPP_FILES}
     PUBLIC
     ${HEADER_FILES}
-
 )
 
 target_link_libraries(${PROJECT_NAME}
     PUBLIC
+    PRIVATE
+    spdlog::spdlog
+    protos::protos
+    cppzmq-static
+    libzmq-static
 )
 
 target_include_directories(
