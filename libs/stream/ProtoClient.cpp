@@ -21,7 +21,7 @@ void ProtoClient::subscribe(const std::string& topic)
     _sub_socket->set(zmq::sockopt::subscribe, topic);
 }
 
-void ProtoClient::send(const Command& cmd)
+CommandReply ProtoClient::sendCommand(const Command& cmd)
 {
     // format header
 
@@ -29,9 +29,18 @@ void ProtoClient::send(const Command& cmd)
     _cmd_socket->send(zmq::message_t(cmd.command_receiver), zmq::send_flags::sndmore);
     _cmd_socket->send(zmq::message_t(cmd.command_data), zmq::send_flags::none);
     spdlog::trace("Sent SubscriberRequest");
+    
+    CommandReply   reply;
+    zmq::message_t reply_msg;
+    std::ignore = _cmd_socket->recv(reply_msg);
+    reply.reply_verb = std::string(static_cast<char*>(reply_msg.data()), reply_msg.size());
+    std::ignore = _cmd_socket->recv(reply_msg);
+    reply.reply_data = std::string(static_cast<char*>(reply_msg.data()), reply_msg.size());
+    return reply;
+
 }
 
-ProtoPackage ProtoClient::receive()
+ProtoPackage ProtoClient::receiveSubscribed()
 {
     zmq::message_t header_msg;
     std::ignore = _sub_socket->recv(header_msg);
