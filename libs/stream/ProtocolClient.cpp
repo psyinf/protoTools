@@ -61,7 +61,7 @@ ProtoPackage ProtocolClient::receiveSubscribed()
     std::ignore = _sub_socket->recv(package_msg);
     ProtoData data{.data{std::vector<char>(static_cast<char*>(package_msg.data()),
                                            static_cast<char*>(package_msg.data()) + package_msg.size())}};
-    spdlog::info("Received package");
+    spdlog::trace("Received package: {}", package_msg.to_string());
 
     return ProtoPackage{.header{header}, .data{data}};
 }
