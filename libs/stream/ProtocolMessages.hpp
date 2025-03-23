@@ -10,7 +10,7 @@ struct ProtoHeader
     // protocol_name | [adapter_descriptor]
     // the protocol is mandatory, the adapter is optional and may be left out. If it is left out, the | is also left out
     // e.g. the following header is valid: "CAN|USB-CAN
-    std::string protocol_name;      ///< Name of the protocol, e.g. CAN
+    std::string protocol_name; ///< Name of the protocol, e.g. CAN. This should also reflect how the data is presented (.e.g JSON)
     std::string adapter_descriptor; ///< Descriptor of the adapter, e.g. USB-CANmodul
 };
 

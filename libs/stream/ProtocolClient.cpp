@@ -24,7 +24,6 @@ void ProtocolClient::subscribe(const std::string& topic)
 CommandReply ProtocolClient::sendCommand(const Command& cmd)
 {
     // format header
-
     _cmd_socket->send(zmq::message_t(cmd.command_verb), zmq::send_flags::sndmore);
     _cmd_socket->send(zmq::message_t(cmd.command_receiver), zmq::send_flags::sndmore);
     _cmd_socket->send(zmq::message_t(cmd.command_data), zmq::send_flags::none);
@@ -37,7 +36,6 @@ CommandReply ProtocolClient::sendCommand(const Command& cmd)
     std::ignore = _cmd_socket->recv(reply_msg);
     reply.reply_data = std::string(static_cast<char*>(reply_msg.data()), reply_msg.size());
     return reply;
-
 }
 
 ProtoPackage ProtocolClient::receiveSubscribed()
