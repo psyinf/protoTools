@@ -3,8 +3,8 @@
 #include <zmq.hpp>
 #include <ProtocolCommandServer.hpp>
 
-ProtocolServer::ProtocolServer(const ProtoHeader& header)
-  : _context_ptr(std::make_unique<zmq::context_t>(1))
+ProtocolServer::ProtocolServer(const ProtoHeader& header, std::shared_ptr<zmq::context_t> context)
+  : _context_ptr(context)
   , _publisher(_context_ptr)
   , _proto_header(header)
 {

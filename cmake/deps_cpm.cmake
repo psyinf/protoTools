@@ -81,13 +81,6 @@ CPMAddPackage(
 )
 
 CPMAddPackage(
-	NAME  nlohmann_json
-	GITHUB_REPOSITORY nlohmann/json
-	GIT_TAG v3.11.3
-)
-
-
-CPMAddPackage(
     NAME libzmq
     GITHUB_REPOSITORY zeromq/libzmq
     GIT_TAG v4.3.5
@@ -125,4 +118,11 @@ CPMAddPackage(
     GIT_TAG v4.10.0
     OPTIONS
     "CPPZMQ_BUILD_TESTS OFF" 
+)
+
+CPMAddPackage( 
+    NAME nlohmann_json
+
+    GITHUB_REPOSITORY nlohmann/json
+    GIT_TAG v3.11.3
 )

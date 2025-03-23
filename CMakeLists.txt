@@ -4,7 +4,7 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 option(ENABLE_TESTING "Enable testing" ON)
-
+option(BUILD_APPS "Build apps" ON)
 
 
 include(cmake/PreventInSourceBuilds.cmake)
@@ -15,7 +15,9 @@ include(cmake/deps_cpm.cmake)
 
 
 add_subdirectory(libs)
-add_subdirectory(apps)
+if (BUILD_APPS)
+    add_subdirectory(apps)
+endif()
 
 if (ENABLE_TESTING AND False)
     enable_testing()
