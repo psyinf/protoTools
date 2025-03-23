@@ -4,8 +4,10 @@
 #include <thread>
 #include <stream/ProtocolClient.hpp>
 #include <stream/ProtoUtils.hpp>
+#include <stream/ProtocolDirectoryClient.hpp>
 #include <future>
 #include <conio.h>
+
 static char input()
 {
     return getch();
@@ -14,7 +16,16 @@ static char input()
 int main([[maybe_unused]] int argc, [[maybe_unused]] char** argv)
 try
 {
-    ProtocolClient                     sub( ProtoUtils::makeContext(1));
+    auto           ctx = ProtoUtils::makeContext(1);
+    ProtocolClient                     sub(ctx );
+    ProtocolDirectoryClient dir(ctx);
+    dir.bind();
+    auto protocols = dir.queryProtocols();
+    for (const auto& p : protocols)
+    {
+        std::cout << "Protocol: " << p.protocol_name << " Adapter: " << p.adapter_descriptor << std::endl;
+    }
+
     //sub.bind({"tcp://127.0.0.1:55556", "tcp://127.0.0.1:51001"});
     sub.bind({ "tcp://127.0.0.1:41000", "tcp://127.0.0.1:41001" });
     sub.subscribe("TSI");

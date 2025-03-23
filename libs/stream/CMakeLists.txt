@@ -22,6 +22,7 @@ target_link_libraries(${PROJECT_NAME}
     PRIVATE
     spdlog::spdlog
     protos::protos
+    nlohmann_json::nlohmann_json
     cppzmq-static
     libzmq-static
 )

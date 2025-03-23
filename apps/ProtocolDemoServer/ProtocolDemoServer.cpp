@@ -2,6 +2,8 @@
 
 #include <stream/ProtocolServer.hpp>
 #include <stream/ProtocolMessages.hpp>
+#include <stream/ProtocolDirectory.hpp>
+#include <stream/ProtoUtils.hpp>
 
 #include <iostream>
 #include <chrono>
@@ -30,7 +32,6 @@ public:
         spdlog::info("Sending message: {}", message);
     }
 
-
 private:
     const std::string _protocolName;
     // internal state
@@ -40,9 +41,16 @@ private:
 int main([[maybe_unused]] int argc, [[maybe_unused]] char** argv)
 try
 {
+    // not needed, but demonstration of ProtocolDirectory
+    auto context = ProtoUtils::makeContext(1);
+    auto directory = std::make_shared<ProtocolDirectory>(context);
+    directory->bind("tcp://*:9999");
+    directory->addProtocol({"CAN", "USB_CAN", "tcp://127.0.0.1:55555", "tcp://*:51001"});
+    directory->startRunning();
+
     DemoProtocol p1("CAN");
 
-    ProtocolServer server({ "CAN" ,"CAN_USB"});
+    ProtocolServer server({"CAN", "CAN_USB"}, context);
     server.bind("tcp://127.0.0.1:55555", true);
     server.setCommandCallback([&p1](const Command& cmd) {
         spdlog::info("Received command: {}:{}:{}", cmd.command_verb, cmd.command_receiver, cmd.command_data);

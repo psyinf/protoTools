@@ -17,8 +17,9 @@ public:
     /**
      * @brief Constructs a ProtocolServer with the given protocol header.
      * @param proto The protocol header.
+     * @param context The shared pointer to the ZeroMQ context.
      */
-    ProtocolServer(const ProtoHeader& proto);
+    ProtocolServer(const ProtoHeader& proto, std::shared_ptr<zmq::context_t> context);
 
     /**
      * @brief Binds the server to a publication endpoint.
