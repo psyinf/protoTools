@@ -40,6 +40,7 @@ public:
      * @brief Sends a protocol message consisting of a header and a data package.
      * @param header The protocol header.
      * @param package The protocol data package.
+     * @see docs/ProtoHeader.md and ProtoHeader
      */
     void send(const ProtoHeader& header, const ProtoData& package);
 

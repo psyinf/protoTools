@@ -6,7 +6,7 @@ namespace {
 static zmq::message_t makeHeaderMessage(const ProtoHeader& header)
 {
     std::string header_str = header.protocol_name;
-    if (!header.adapter_descriptor.empty()) { header_str += "|" + header.adapter_descriptor; }
+    if (!header.source.empty()) { header_str += "|" + header.source; }
     return zmq::message_t(header_str);
 }
 
