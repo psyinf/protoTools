@@ -30,17 +30,7 @@ try
                      p.command_endpoint);
     }
 
-    //     ProtocolDirectoryClient dir(ctx);
-    //     dir.bind();
-    //     auto protocols = dir.queryProtocols();
-    //     for (const auto& p : protocols)
-    //     {
-    //         std::format("Protocol: {} {} at pub:{}| cmd:{}", p.protocol_name, p.adapter_descriptor,
-    //         p.publisher_endpoint, p.command_endpoint);
-    //     }
-
-    // sub.bind({"tcp://127.0.0.1:55556", "tcp://127.0.0.1:51001"});
-    // bind
+    
     const std::string sub_endpoint = "tcp://localhost:41000";
     const std::string req_endpoint = "tcp://localhost:41001";
     spdlog::info("Binding to publisher {} and command endpoint {}", sub_endpoint, req_endpoint);
