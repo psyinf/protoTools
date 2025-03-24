@@ -51,7 +51,7 @@ try
 
     DemoProtocol p1("CAN");
 
-    ProtocolServer server({"CAN", "CAN_USB"}, context);
+    ProtocolServer server( context);
     server.bind("tcp://127.0.0.1:41000", false);
     server.setCommandCallback([&p1](const Command& cmd) {
         spdlog::info("Received command: {}:{}:{}", cmd.command_verb, cmd.command_receiver, cmd.command_data);
@@ -66,7 +66,7 @@ try
     {
         auto m = p1.getMessage();
         spdlog::info("Message: {}", m);
-        server.publish({std::vector<char>(m.begin(), m.end())});
+        server.publish({"CAN", "CAN_USB"},{std::vector<char>(m.begin(), m.end())});
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     }
     return 0;

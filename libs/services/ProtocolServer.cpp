@@ -3,10 +3,9 @@
 #include <zmq.hpp>
 #include <ProtocolCommandServer.hpp>
 
-ProtocolServer::ProtocolServer(const ProtoHeader& header, std::shared_ptr<zmq::context_t> context)
+ProtocolServer::ProtocolServer(std::shared_ptr<zmq::context_t> context)
   : _context_ptr(context)
   , _publisher(_context_ptr)
-  , _proto_header(header)
 {
 }
 
@@ -34,7 +33,7 @@ void ProtocolServer::startCommandHandler(const std::string& cmd_endpoint)
     }}.detach();
 }
 
-void ProtocolServer::publish(const ProtoData& data)
+void ProtocolServer::publish(const ProtoHeader& proto_header, const ProtoData& data)
 {
-    _publisher.send(_proto_header, data);
+    _publisher.send(proto_header, data);
 }
