@@ -1,5 +1,5 @@
 #pragma once
-#include <stream/ForwardDeclarations.hpp>
+#include <services/ForwardDeclarations.hpp>
 #include <memory>
 
 class ProtoUtils

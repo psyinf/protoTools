@@ -1,6 +1,6 @@
 #pragma once
-#include <stream/ProtocolMessages.hpp>
-#include <stream/ForwardDeclarations.hpp>
+#include <services/ProtocolMessages.hpp>
+#include <services/ForwardDeclarations.hpp>
 #include <memory>
 
 /**

@@ -2,9 +2,9 @@
 #include <format>
 #include <stdexcept>
 #include <thread>
-#include <stream/ProtocolClient.hpp>
-#include <stream/ProtoUtils.hpp>
-#include <stream/ProtocolDirectoryClient.hpp>
+#include <services/ProtocolClient.hpp>
+#include <services/ProtoUtils.hpp>
+#include <services/directory/ProtocolDirectoryClient.hpp>
 #include <future>
 #include <conio.h>
 
@@ -23,25 +23,28 @@ try
     auto protocols = dir.queryProtocols();
     for (const auto& p : protocols)
     {
-        std::cout << "Protocol: " << p.protocol_name << " Adapter: " << p.adapter_descriptor << std::endl;
+        std::format("Protocol: {} {} at pub:{}| cmd:{}", p.protocol_name, p.adapter_descriptor, p.publisher_endpoint, p.command_endpoint);
     }
 
     //sub.bind({"tcp://127.0.0.1:55556", "tcp://127.0.0.1:51001"});
     sub.bind({ "tcp://127.0.0.1:41000", "tcp://127.0.0.1:41001" });
     sub.subscribe("TSI");
     auto key = std::async(std::launch::async, input);
+
+    std::jthread{[&]() {
+        while (true)
+        {
+            auto r = sub.receiveSubscribed();
+            std::cout << "Received: " << r.header.protocol_name << " " << r.header.adapter_descriptor << std::endl;
+            std::cout << std::string(r.data.data.begin(), r.data.data.end()) << std::endl;
+        }
+    }}.detach();
+
     while (true)
     {
 
-        std::jthread{[&]() {
-            while (true)
-            {
-                auto r = sub.receiveSubscribed();
-                std::cout << "Received: " << r.header.protocol_name << " " << r.header.adapter_descriptor << std::endl;
-                std::cout << std::string(r.data.data.begin(), r.data.data.end()) << std::endl;
-            }
-        }}.detach();
-        if (key.wait_for(std::chrono::milliseconds(0)) == std::future_status::ready)
+        
+        if (key.wait_for(std::chrono::milliseconds(1)) == std::future_status::ready)
         {
             auto key_char = key.get();
             switch (key_char)
