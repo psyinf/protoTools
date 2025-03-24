@@ -1,9 +1,9 @@
 #pragma once
 
-#include <stream/ProtocolServer.hpp>
-#include <stream/ProtocolMessages.hpp>
-#include <stream/ProtocolDirectory.hpp>
-#include <stream/ProtoUtils.hpp>
+#include <services/ProtocolServer.hpp>
+#include <services/ProtocolMessages.hpp>
+#include <services/directory/ProtocolDirectoryServer.hpp>
+#include <services/ProtoUtils.hpp>
 
 #include <iostream>
 #include <chrono>
@@ -41,22 +41,23 @@ private:
 int main([[maybe_unused]] int argc, [[maybe_unused]] char** argv)
 try
 {
+    spdlog::info("Starting Protocol demo server");
     // not needed, but demonstration of ProtocolDirectory
     auto context = ProtoUtils::makeContext(1);
-    auto directory = std::make_shared<ProtocolDirectory>(context);
+    auto directory = std::make_shared<ProtocolDirectoryServer>(context);
     directory->bind("tcp://*:9999");
-    directory->addProtocol({"CAN", "USB_CAN", "tcp://127.0.0.1:55555", "tcp://*:51001"});
+    directory->addProtocol({"CAN", "USB_CAN", "tcp://127.0.0.1:41000", "tcp://*:41001"});
     directory->startRunning();
 
     DemoProtocol p1("CAN");
 
     ProtocolServer server({"CAN", "CAN_USB"}, context);
-    server.bind("tcp://127.0.0.1:55555", true);
+    server.bind("tcp://127.0.0.1:41000", false);
     server.setCommandCallback([&p1](const Command& cmd) {
         spdlog::info("Received command: {}:{}:{}", cmd.command_verb, cmd.command_receiver, cmd.command_data);
         return CommandReply{cmd.command_verb, "ACK"};
     });
-    server.startCommandHandler("tcp://*:51001");
+    server.startCommandHandler("tcp://*:41001");
 
     spdlog::info("Server started");
     // fire up a proxy

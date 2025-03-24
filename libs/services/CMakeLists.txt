@@ -1,4 +1,4 @@
-project(protos_streams CXX)
+project(protos_services CXX)
 set(CMAKE_CXX_STANDARD 23)
 #linker language for header only
 

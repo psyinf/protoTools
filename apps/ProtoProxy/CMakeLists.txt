@@ -11,8 +11,7 @@ add_executable(${PROJECT_NAME} ${HEADER_FILES} ${CPP_FILES} )
 target_link_libraries(${PROJECT_NAME}
     PUBLIC
 	protos::protos
-    protos::protos_streams
-    #nlohmann_json::nlohmann_json
+    protos::protos_services
     cppzmq-static
     libzmq-static
     spdlog::spdlog

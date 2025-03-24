@@ -2,8 +2,8 @@
 #include <format>
 #include <stdexcept>
 #include <thread>
-#include <stream/ProtocolPublisher.hpp>
-#include <stream/ProtoUtils.hpp>
+#include <services/ProtocolPublisher.hpp>
+#include <services/ProtoUtils.hpp>
 
 int main([[maybe_unused]] int argc, [[maybe_unused]] char** argv)
 try

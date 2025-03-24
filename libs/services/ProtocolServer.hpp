@@ -1,7 +1,7 @@
 #pragma once
 #include <functional>
-#include <stream/ProtocolMessages.hpp>
-#include <stream/ProtocolPublisher.hpp>
+#include <services/ProtocolMessages.hpp>
+#include <services/ProtocolPublisher.hpp>
 #include <stop_token>
 
 /**

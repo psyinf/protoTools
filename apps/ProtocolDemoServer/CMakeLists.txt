@@ -11,7 +11,7 @@ add_executable(${PROJECT_NAME} ${HEADER_FILES} ${CPP_FILES} )
 target_link_libraries(${PROJECT_NAME}
     PUBLIC
 	protos::protos
-    protos::protos_streams
+    protos::protos_services
     spdlog::spdlog
 )
 target_include_directories(${PROJECT_NAME}

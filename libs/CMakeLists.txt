@@ -1,2 +1,2 @@
 add_subdirectory(protos)
-add_subdirectory(stream)
+add_subdirectory(services)
