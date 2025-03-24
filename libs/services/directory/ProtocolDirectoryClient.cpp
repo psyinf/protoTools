@@ -23,12 +23,14 @@ void ProtocolDirectoryClient::bind(const std::string& endpoint /*= "tcp://localh
     _req_socket->connect(endpoint);
 }
 
-std::vector<ProtocolDirectoryEntry> ProtocolDirectoryClient::queryProtocols()
+std::vector<ProtocolDirectoryEntry> ProtocolDirectoryClient::queryProtocols(uint16_t timeout_ms)
 {
     zmq::message_t request(std::string{"list"});
     _req_socket->send(request, zmq::send_flags::none);
     zmq::message_t reply;
-    _req_socket->recv(reply, zmq::recv_flags::none);
+    _req_socket->set(zmq::sockopt::rcvtimeo, static_cast<int>(timeout_ms));
+    auto opt_val = _req_socket->recv(reply, zmq::recv_flags::none);
+    if (!opt_val.has_value()) { return {}; }
 
     nlohmann::json j = nlohmann::json::parse(reply.to_string());
 

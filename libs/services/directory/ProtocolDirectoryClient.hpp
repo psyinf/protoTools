@@ -22,7 +22,7 @@ public:
 
     void addChangeCallback(DirectoryUpdateCallback callback) { _directory_update_callback = callback; }
 
-    std::vector<ProtocolDirectoryEntry> queryProtocols();
+    std::vector<ProtocolDirectoryEntry> queryProtocols(uint16_t timeout_msec);
 
     // void addProtocol(const ProtocolDirectoryEntry& protocol);
     // void removeProtocol(const std::string& protocol_name);
