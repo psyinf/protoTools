@@ -49,7 +49,7 @@ ProtoPackage ProtocolClient::receiveSubscribed()
     if (pos != std::string::npos)
     {
         header.protocol_name = header_str.substr(0, pos);
-        header.adapter_descriptor = header_str.substr(pos + 1);
+        header.source = header_str.substr(pos + 1);
     }
     else { header.protocol_name = header_str; }
 
