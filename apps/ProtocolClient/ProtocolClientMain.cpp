@@ -18,17 +18,17 @@ try
 {
     auto           ctx = ProtoUtils::makeContext(1);
     ProtocolClient                     sub(ctx );
-    ProtocolDirectoryClient dir(ctx);
-    dir.bind();
-    auto protocols = dir.queryProtocols();
-    for (const auto& p : protocols)
-    {
-        std::format("Protocol: {} {} at pub:{}| cmd:{}", p.protocol_name, p.adapter_descriptor, p.publisher_endpoint, p.command_endpoint);
-    }
+//     ProtocolDirectoryClient dir(ctx);
+//     dir.bind();
+//     auto protocols = dir.queryProtocols();
+//     for (const auto& p : protocols)
+//     {
+//         std::format("Protocol: {} {} at pub:{}| cmd:{}", p.protocol_name, p.adapter_descriptor, p.publisher_endpoint, p.command_endpoint);
+//     }
 
     //sub.bind({"tcp://127.0.0.1:55556", "tcp://127.0.0.1:51001"});
     sub.bind({ "tcp://127.0.0.1:41000", "tcp://127.0.0.1:41001" });
-    sub.subscribe("TSI");
+    sub.subscribe("ECHO");
     auto key = std::async(std::launch::async, input);
 
     std::jthread{[&]() {
@@ -56,13 +56,13 @@ try
             }
             case 's': {
                 std::string data = std::format("Hullo {}", int(0));
-                sub.sendCommand({"SEND", "CAN", data});
-                std::cout << "Sent package" << std::endl;
+                auto rep = sub.sendCommand({"SEND", "ECHO", data});
+                std::cout << "Sent package, got " << rep.reply_data << std::endl;
                 break;
             }
             case 'c': {
                 std::string data = std::format("Hullo {}", int(0));
-                sub.sendCommand({"CONNECT", "CAN_USB", data});
+                sub.sendCommand({"CONNECT", "ECHO", data});
                 std::cout << "Sent package" << std::endl;
                 break;
             }
