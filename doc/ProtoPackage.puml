@@ -1,0 +1,18 @@
+@startuml
+
+<style>
+note {
+    backgroundcolor white
+    shadowing 0
+    linecolor transparent
+}
+</style>
+object ProtoPackage {
+  <#lightblue,#black>|=  Frame#  |=  Content  |=  Format/Subfields  |= Example|
+  <#white>|  0  |  Header | Protocol \|  Source | "CAN\|USB"  |
+  <#white>|  1  |  Payload  | Data | "{"ID":860,"Time":7357255,"Size":6,"Data":[223,255,225,255,0,0,0,0]}"|
+}
+note bottom of ProtoPackage
+Header field Source is optional and can be omitted together with the separator
+end note
+@enduml
