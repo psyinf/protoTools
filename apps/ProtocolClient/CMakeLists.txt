@@ -13,6 +13,7 @@ target_link_libraries(${PROJECT_NAME}
 	protos::protos
     protos::protos_services
     spdlog::spdlog
+    CLI11::CLI11
 )
 target_include_directories(${PROJECT_NAME}
 	PRIVATE

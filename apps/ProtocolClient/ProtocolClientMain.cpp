@@ -8,17 +8,25 @@
 #include <future>
 #include <conio.h>
 #include <spdlog/spdlog.h>
+#include <CLI/CLI.hpp>
 
 int main([[maybe_unused]] int argc, [[maybe_unused]] char** argv)
 try
 {
+    std::string service_dir_host = "localhost";
+    CLI::App    app{"Protocol client"};
+    app.add_option("-s, --service_discovery", service_dir_host, "Service discovery host");
+    CLI11_PARSE(app, argc, argv);
+
+    app.parse(argc, argv);
+
     spdlog::info("Starting Protocol client");
     auto           ctx = ProtoUtils::makeContext(1);
     ProtocolClient sub(ctx);
 
     ProtocolDirectoryClient dir(ctx);
-    dir.bind();
-    spdlog::info("Querying protocols from directory");
+    dir.bind(std::format("tcp://{}:9999", service_dir_host), std::format("tcp://{}:9998", service_dir_host));
+    spdlog::info("Querying protocols from directory at {:?}", service_dir_host);
     auto protocols = dir.queryProtocols(20000);
     std::cout << "Found " << protocols.size() << " protocols" << std::endl;
     for (const auto& p : protocols)
@@ -30,9 +38,14 @@ try
                      p.command_endpoint);
     }
 
-    
-    const std::string sub_endpoint = "tcp://localhost:41000";
-    const std::string req_endpoint = "tcp://localhost:41001";
+    // for now assume only one endpoint from the directory
+    std::string sub_endpoint = "tcp://localhost:41000";
+    std::string req_endpoint = "tcp://localhost:41001";
+    if (protocols.size() > 0)
+    {
+        sub_endpoint = protocols[0].publisher_endpoint;
+        req_endpoint = protocols[0].command_endpoint;
+    }
     spdlog::info("Binding to publisher {} and command endpoint {}", sub_endpoint, req_endpoint);
     sub.bind({sub_endpoint, req_endpoint});
     // bind to all topics in protocols
