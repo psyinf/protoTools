@@ -1,0 +1,19 @@
+@startuml
+
+<style>
+note {
+    backgroundcolor white
+    shadowing 0
+    linecolor transparent
+}
+</style>
+object Command {
+  <#lightblue,#black>|=  Frame#  |=  Content  |=  Format/Subfields  |= Example|
+  <#white>|  0  |  Verb      | Type of command | "connect"  |
+  <#white>|  1  |  Receiver  | Publisher | "CAN\|USB" |
+  <#white>|  2  |  Data      | Command payload | "{"Channel":1, "BaudRate: "250k"}"|
+}
+note bottom of Command
+The payload depends on the command verb and the actual receiver. 
+end note
+@enduml
