@@ -1,0 +1,18 @@
+@startuml
+
+<style>
+note {
+    backgroundcolor white
+    shadowing 0
+    linecolor transparent
+}
+</style>
+object CommandReply {
+  <#lightblue,#black>|=  Frame#  |=  Content  |=  Format/Subfields  |= Example|
+  <#white>|  0  |  Verb      | Reply token | "OK"  |
+  <#white>|  1  |  Data      | Command payload | "{"Channel":1, "BaudRate: "250k"}"|
+}
+note bottom of Command
+The payload depends on the command verb and the actual receiver. 
+end note
+@enduml

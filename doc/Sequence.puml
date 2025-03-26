@@ -1,0 +1,39 @@
+@startuml
+box "ProtoServer" #LightBlue
+
+participant Proto1 [
+    =Protocol
+    ----
+    ""CAN""
+]
+
+participant ProtocolPublisher
+participant CommandHandler
+end box
+
+participant Client
+participant Client2
+ProtocolPublisher->Proto1 : getData
+Proto1-->ProtocolPublisher : notConnected
+Client->CommandHandler : Command [connect, CAN, {Channel:1, BaudRate:250k}]
+CommandHandler->Proto1 : connect
+
+
+activate Proto1
+Proto1-->CommandHandler 
+CommandHandler->Client : CommandReply [OK]
+Client2->CommandHandler : Command [send, CAN, {SomeCanFrame}]
+CommandHandler->Proto1: send
+Proto1-->CommandHandler 
+
+CommandHandler->Client2 : CommandReply [OK]
+loop until Proto1 is disconnected
+    ProtocolPublisher->Proto1 : getData
+    Proto1-->ProtocolPublisher : Reply
+    ProtocolPublisher->Client : publish
+    ProtocolPublisher->Client2 : publish
+end loop
+
+
+
+@enduml
