@@ -21,9 +21,9 @@ public:
     GenericDissector(protos::PacketDescriptor&& packet_template);
 
     // process the next byte to build the packet. If the packet is complete the function returns the packet
-    
-    
     std::optional<protos::PacketData>  addByte(const std::byte b);
+
+    std::optional<protos::PacketData> addBytes(std::span<const std::byte> bytes);
     // check if a potential header in the PacketDescriptor matches the given header.
     bool matchesHeader(const std::vector<std::byte>& header) const;
 protected:
@@ -34,6 +34,8 @@ protected:
     bool stackIsEmpty() const;
 
     protos::FieldDescriptor& getFieldInStack(std::string_view name);
+
+    void removeFieldFromStack(std::string_view name);
 
     protos::FieldDescriptor& stackTop() { return current_packet_stack.front(); }
 
