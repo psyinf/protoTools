@@ -13,6 +13,8 @@ struct FieldData
 {
     const std::string            name;
     const std::vector<std::byte> value;
+
+    bool operator==(const FieldData& other) const { return name == other.name && value == other.value; }
 };
 
 } // namespace protos

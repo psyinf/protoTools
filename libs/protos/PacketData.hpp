@@ -28,5 +28,8 @@ struct PacketData
         return std::ranges::find_if(fields, [&field_name](const auto& field) { return field.name == field_name; }) !=
                fields.end();
     }
+
+    bool operator==(const PacketData& other) const { return name == other.name && fields == other.fields; }
+
 };
-} // namespace protos::
+} // namespace protos
