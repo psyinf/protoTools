@@ -41,7 +41,8 @@ TEST_CASE("dependent size struct", "[ProtocolDissector]")
     DependentSizePacket<3> packet{.data{to_array_wo_null("123")}};
     GenericDissector       dissector{packet_template};
 
-    auto  bytes = std::as_bytes(std::span{&packet, 1});
+    auto bytes = std::as_bytes(std::span{&packet, 1});
+
     float f = 3.0f;
     auto  res = test_dissect(dissector, bytes);
     REQUIRE(res->get("SIZE").value[0] == std::byte(3));
@@ -60,14 +61,18 @@ TEST_CASE("dependent removal struct", "[ProtocolDissector]")
     packet_template.add({.name{"SIZE"}, .size{1}, .determinesSizeOf{"DATA"}, .sizeDeterminesExistenceOf{"CRC"}});
     packet_template.add({.name{"DATA"}, .size{0}});
     packet_template.add({.name{"CRC"}, .size{1}});
-    // the described packet as struct
+    // the described packet as struct, but we skip the CRC field
     DependentSizeWithCRCPacket<0> packet{.data{}};
     GenericDissector              dissector{packet_template};
 
-    auto  bytes = std::as_bytes(std::span{&packet, 1});
+    auto bytes_complete = std::as_bytes(std::span{&packet, 1});
+    auto bytes = bytes_complete.subspan(0, 1);
+
     float f = 3.0f;
     auto  res = test_dissect(dissector, bytes);
+
     REQUIRE(res->get("SIZE").value[0] == std::byte(0));
     REQUIRE(res->get("DATA").value.size() == 0);
-    REQUIRE(res->get("CRC").value.size() == 0);
+    REQUIRE(!res->has("CRC"));
+    // REQUIRE(res->get("CRC").value.size() == 0);
 }
