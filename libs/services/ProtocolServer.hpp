@@ -48,7 +48,7 @@ public:
 
 private:
     std::shared_ptr<zmq::context_t> _context_ptr;          ///< The ZeroMQ context pointer.
-    ProtocolPublisher                  _publisher;            ///< The protocol publisher.
+    ProtocolPublisher               _publisher;            ///< The protocol publisher.
     CommandHandler                  _command_handler = {}; ///< The command handler callback function.
     std::stop_source                _stop_source;          ///< The stop source for stopping the command handler.
 };
