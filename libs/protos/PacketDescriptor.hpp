@@ -26,7 +26,7 @@ struct PacketDescriptor
     protos::PacketDescriptor& set(const std::string& fieldName, const T& value)
     {
         auto& field = get(fieldName);
-        field.value = protos::bytes::toBytes(value, field.size);
+        field.value = bytes::to_bytes(value, field.size);
         return *this;
     }
 
