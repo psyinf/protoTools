@@ -19,7 +19,7 @@ if (BUILD_APPS)
     add_subdirectory(apps)
 endif()
 
-if (ENABLE_TESTING AND False)
+if (ENABLE_TESTING)
     enable_testing()
 	add_subdirectory(tests)
 endif()
