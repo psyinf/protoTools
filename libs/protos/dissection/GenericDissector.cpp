@@ -8,14 +8,14 @@
 
 void protos::dissector::GenericDissector::newPacket()
 {
-    current_packet = protos::PacketData{};
+    current_packet = protos::dissector::PacketData{};
     makePacketStack();
 }
 
-protos::FieldDescriptor& protos::dissector::GenericDissector::getFieldInStack(std::string_view name)
+protos::dissector::FieldDescriptor& protos::dissector::GenericDissector::getFieldInStack(std::string_view name)
 {
     auto iter = std::ranges::find_if(current_packet_stack,
-                                     [&name](const protos::FieldDescriptor& f) { return f.name == name; });
+                                     [&name](const protos::dissector::FieldDescriptor& f) { return f.name == name; });
     if (iter == current_packet_stack.end()) { throw std::runtime_error("Field not found"); }
     return *iter;
 }
@@ -29,7 +29,7 @@ void protos::dissector::GenericDissector::makePacketStack()
     }
 }
 
-std::optional<protos::PacketData> protos::dissector::GenericDissector::addByte(const std::byte b)
+std::optional<protos::dissector::PacketData> protos::dissector::GenericDissector::addByte(const std::byte b)
 {
     // check if we need to start a new packet
     if (stackIsEmpty() && current_message_buffer.empty()) { newPacket(); }
@@ -39,7 +39,7 @@ std::optional<protos::PacketData> protos::dissector::GenericDissector::addByte(c
     if (!stackIsEmpty() && 0 == stackTop().size)
     {
         // add the empty field to the packet
-        current_packet.fields.push_back(protos::FieldData{stackTop().name, {}});
+        current_packet.fields.push_back(protos::dissector::FieldData{stackTop().name, {}});
         // skip empty
         current_packet_stack.pop_front();
     }
@@ -62,7 +62,7 @@ std::optional<protos::PacketData> protos::dissector::GenericDissector::addByte(c
         // we have a complete field
 
         const auto field = stackTop();
-        auto       field_data = protos::FieldData{field.name, current_message_buffer};
+        auto       field_data = protos::dissector::FieldData{field.name, current_message_buffer};
         current_packet_stack.pop_front();
         current_packet.fields.push_back(field_data);
         current_message_buffer.clear();
@@ -84,8 +84,8 @@ std::optional<protos::PacketData> protos::dissector::GenericDissector::addByte(c
         // while top is a zero size field, consider it handled
         while (!stackIsEmpty() && 0 == stackTop().size)
         {
-            auto field_data = protos::FieldData{stackTop().name, {}}; // empty field
-            current_packet.fields.push_back(protos::FieldData{stackTop().name, {}});
+            auto field_data = protos::dissector::FieldData{stackTop().name, {}}; // empty field
+            current_packet.fields.push_back(protos::dissector::FieldData{stackTop().name, {}});
             current_packet_stack.pop_front();
         }
     }
@@ -100,13 +100,13 @@ std::optional<protos::PacketData> protos::dissector::GenericDissector::addByte(c
     else { return std::nullopt; }
 }
 
-protos::dissector::GenericDissector::GenericDissector(const protos::PacketDescriptor& packet_template)
+protos::dissector::GenericDissector::GenericDissector(const protos::dissector::PacketDescriptor& packet_template)
   : packet_template(packet_template)
 {
     newPacket();
 }
 
-protos::dissector::GenericDissector::GenericDissector(protos::PacketDescriptor&& packet_template)
+protos::dissector::GenericDissector::GenericDissector(protos::dissector::PacketDescriptor&& packet_template)
   : packet_template(std::move(packet_template))
 {
     newPacket();
@@ -117,7 +117,7 @@ bool protos::dissector::GenericDissector::stackIsEmpty() const
     return current_packet_stack.empty();
 }
 
-uint32_t protos::dissector::GenericDissector::getSizeFromFieldValue(const protos::FieldDescriptor& field)
+uint32_t protos::dissector::GenericDissector::getSizeFromFieldValue(const protos::dissector::FieldDescriptor& field)
 {
     //  TODO byte is only a placeholder, we need to convert it to the correct type based on the number of bytes
     switch (field.size)
@@ -152,17 +152,17 @@ bool protos::dissector::GenericDissector::matchesHeader(const std::vector<std::b
     return false;
 }
 
-std::optional<protos::PacketData> protos::dissector::GenericDissector::addBytes(std::span<const std::byte> bytes)
+std::optional<protos::dissector::PacketData> protos::dissector::GenericDissector::addBytes(std::span<const std::byte> bytes)
 {
     // check if all fields are fixed size (.e.g. determinesSizeOf is empty)
     auto fixed_size = (std::ranges::all_of(
-        packet_template.fields, [](const protos::FieldDescriptor& f) { return f.determinesSizeOf.empty(); }));
+        packet_template.fields, [](const protos::dissector::FieldDescriptor& f) { return f.determinesSizeOf.empty(); }));
 
     if (true)
     {
         auto current_data_index = 0;
         // if all fields are fixed size, we can process the bytes in one go
-        auto                            packet = protos::PacketData{packet_template.getName()};
+        auto                            packet = protos::dissector::PacketData{packet_template.getName()};
         std::map<std::string, uint32_t> field_sizes;
         std::set<std::string>           removed_fields;
 
@@ -175,7 +175,7 @@ std::optional<protos::PacketData> protos::dissector::GenericDissector::addBytes(
 
             if (field_size == 0)
             {
-                packet.add(protos::FieldData{field.name, {}});
+                packet.add(protos::dissector::FieldData{field.name, {}});
                 continue;
             }
             if (removed_fields.contains(field.name))
@@ -188,7 +188,7 @@ std::optional<protos::PacketData> protos::dissector::GenericDissector::addBytes(
             auto current_end = bytes.begin() + current_data_index + field_size;
             current_data_index += field_size;
 
-            auto field_data = protos::FieldData{field.name, std::vector<std::byte>(current_start, current_end)};
+            auto field_data = protos::dissector::FieldData{field.name, std::vector<std::byte>(current_start, current_end)};
             packet.add(field_data);
             // remember the size of the field if it determines the size of another field
             if (!field.determinesSizeOf.empty()) { field_sizes[field.determinesSizeOf] = getSizeFromFieldValue(field); }
@@ -211,7 +211,7 @@ std::optional<protos::PacketData> protos::dissector::GenericDissector::addBytes(
 void protos::dissector::GenericDissector::removeFieldFromStack(std::string_view name)
 {
     auto iter = std::ranges::find_if(current_packet_stack,
-                                     [&name](const protos::FieldDescriptor& f) { return f.name == name; });
+                                     [&name](const protos::dissector::FieldDescriptor& f) { return f.name == name; });
     if (iter == current_packet_stack.end()) { throw std::runtime_error("Field not found"); }
     current_packet_stack.erase(iter);
 }

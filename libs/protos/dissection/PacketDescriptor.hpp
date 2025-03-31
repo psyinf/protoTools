@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 
-namespace protos {
+namespace protos::dissector {
 
 // describes a packet as fields of bytes with an associated name, type and further contextual information
 struct PacketDescriptor
@@ -23,7 +23,7 @@ struct PacketDescriptor
     }
 
     template <typename T>
-    protos::PacketDescriptor& set(const std::string& fieldName, const T& value)
+    protos::dissector::PacketDescriptor& set(const std::string& fieldName, const T& value)
     {
         auto& field = get(fieldName);
         field.value = bytes::to_bytes(value, field.size);
@@ -31,7 +31,7 @@ struct PacketDescriptor
     }
 
     template<>
-    protos::PacketDescriptor& set(const std::string& fieldName, const std::vector<std::byte>& value)
+    protos::dissector::PacketDescriptor& set(const std::string& fieldName, const std::vector<std::byte>& value)
     {
        
         auto& field = get(fieldName);

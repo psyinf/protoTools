@@ -5,7 +5,7 @@
 #include <vector>
 #include <cstddef>
 
-namespace protos {
+namespace protos::dissector {
 
 /* An immutable data structure representing a field in a packet */
 

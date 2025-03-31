@@ -3,7 +3,7 @@
 #include <vector>
 #include <cstddef>
 
-namespace protos {
+namespace protos::dissector {
 
 /**
  * Describes a field in a protocol message in terms of its name, size. It also holds the rules for subsequent fields

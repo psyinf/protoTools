@@ -28,7 +28,7 @@ public:
 
     void setBehaviors(const Behaviors& behaviors) { this->behaviors = behaviors; }
 
-    protos::interpreter::InterpretationResults interpretPacketData(const protos::PacketData& data) const;
+    protos::interpreter::InterpretationResults interpretPacketData(const protos::dissector::PacketData& data) const;
 
     void addField(FieldInterpretation&& fieldInterpreter);
 

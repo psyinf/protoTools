@@ -32,7 +32,7 @@ void protos::interpreter::GenericPacketInterpreter::addField(FieldInterpretation
 }
 
 protos::interpreter::InterpretationResults protos::interpreter::GenericPacketInterpreter::interpretPacketData(
-    const protos::PacketData& data) const
+    const protos::dissector::PacketData& data) const
 {
     protos::interpreter::InterpretationResults result;
     for (const auto& field : data.fields)
@@ -51,7 +51,7 @@ protos::interpreter::InterpretationResults protos::interpreter::GenericPacketInt
     return result;
 }
 
-// void protos::interpreter::GenericPacketInterpreter::handlePacketData(const protos::PacketData& data) const
+// void protos::interpreter::GenericPacketInterpreter::handlePacketData(const protos::dissector::PacketData& data) const
 // {
 //     if (interpretationResultsCallback) { interpretationResultsCallback(interpretPacketData(data)); }
 //     else
