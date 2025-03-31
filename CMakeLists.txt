@@ -24,10 +24,10 @@ if (ENABLE_TESTING)
 	add_subdirectory(tests)
 endif()
 
-install(DIRECTORY
-        data/
-    DESTINATION
-        data
-    COMPONENT
-        ${RUNTIME_COMPONENT}
-)
+#install(DIRECTORY
+#        data/
+#    DESTINATION
+#        data
+#    COMPONENT
+#        ${RUNTIME_COMPONENT}
+#)
