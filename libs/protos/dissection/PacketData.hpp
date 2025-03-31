@@ -2,7 +2,7 @@
 #include <protos/dissection/FieldData.hpp>
 #include <format>
 
-namespace protos {
+namespace protos::dissector {
 
 // describes structure of a byte-oriented packet of fields.
 struct PacketData
