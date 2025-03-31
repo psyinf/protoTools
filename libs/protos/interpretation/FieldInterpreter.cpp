@@ -19,7 +19,7 @@ std::string getFieldValueAsString(std::string_view name, const protos::interpret
 {
     auto it = std::find_if(context.begin(), context.end(), [&](const auto& field) { return field.name == name; });
     if (it == context.end()) { throw std::runtime_error(std::format("Field {} referenced was not found", name)); }
-    return datafw::value::variant_to_string(it->value);
+    return protos::value::variant_to_string(it->value);
 }
 #ifdef EXTENDED_INTERPRETER
 /*
@@ -88,15 +88,15 @@ TODO : use a callback an external function to handle the expression
  * Caveat: Currently the input and output type must be the same.
  */
 
-datafw::value::Variant handleFunction(const std::vector<std::byte>&                  data,
+protos::value::Variant handleFunction(const std::vector<std::byte>&                  data,
                                       const protos::interpreter::FieldInterpretation&  interpretation,
                                       const protos::interpreter::InterpretationResults& context)
 {
     std::string func_str = datafw::detail::placeholders::replaceAllTokens(
         interpretation.function, [&](std::string_view token) { return getFieldValueAsString(token, context); });
     using namespace datafw::protocol;
-    using namespace datafw::value;
-    auto value = datafw::value::as_variant(interpretation.type, data);
+    using namespace protos::value;
+    auto value = protos::value::as_variant(interpretation.type, data);
 
     using namespace cparse;
     TokenMap vars;
@@ -152,7 +152,7 @@ protos::interpreter::InterpretationResults protos::interpreter::FieldInterpreter
     // else we do the following data flow order: function -> mapper -> type
     // where function and mapper are optional. If no function or mapper is present, the type is used
     // if the function is empty, the input is the type of the field as per description
-    auto result = datafw::value::Variant{};
+    auto result = protos::value::Variant{};
 
     if (!interpretation.function.empty())
     { // create a result from the function
@@ -162,7 +162,7 @@ protos::interpreter::InterpretationResults protos::interpreter::FieldInterpreter
     else
     {
         // the mapper needs a type to work with
-        result = datafw::value::as_variant(interpretation.type, data);
+        result = protos::value::as_variant(interpretation.type, data);
     }
     // map the result. Mappers allow for type conversion
     if (!interpretation.mapper.empty())

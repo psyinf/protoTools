@@ -4,7 +4,7 @@
 #include <variant>
 #include <vector>
 
-namespace datafw::value {
+namespace protos::value {
 
 using Variant = std::variant<std::string, int64_t, uint64_t, double, bool, std::vector<std::byte>>;
 
@@ -103,7 +103,7 @@ T get_variant_as(const Variant& v)
 
 namespace operators {
 template <typename T>
-inline bool operator==(const T& t, const datafw::value::Variant& v)
+inline bool operator==(const T& t, const protos::value::Variant& v)
 {
     const T* c = std::get_if<T>(&v);
 
@@ -111,9 +111,9 @@ inline bool operator==(const T& t, const datafw::value::Variant& v)
 }
 
 template <typename T>
-inline bool operator==(const datafw::value::Variant& v, const T& t)
+inline bool operator==(const protos::value::Variant& v, const T& t)
 {
     return t == v;
 }
 } // namespace operators
-} // namespace datafw::dissector
+} // namespace protos::value

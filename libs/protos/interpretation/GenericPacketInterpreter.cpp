@@ -78,10 +78,10 @@ void protos::interpreter::GenericPacketInterpreter::handleMissingField(
         });
         break;
     case EmptyFieldBehavior::EMPTY_STRING:
-        intpretation_result.push_back({name, datafw::value::Variant{""}});
+        intpretation_result.push_back({name, protos::value::Variant{""}});
         break;
     case EmptyFieldBehavior::DASH:
-        intpretation_result.push_back({name, datafw::value::Variant{"-"}});
+        intpretation_result.push_back({name, protos::value::Variant{"-"}});
         break;
     }
 }
