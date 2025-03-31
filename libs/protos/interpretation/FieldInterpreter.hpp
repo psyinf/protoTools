@@ -28,9 +28,9 @@ public:
     }
 
     static protos::interpreter::InterpretationResults interpret(
-        const std::string&                             name,
-        const std::vector<std::byte>&                  data,
-        const protos::interpreter::FieldInterpretation&  interpretation,
+        const std::string&                                name,
+        const std::vector<std::byte>&                     data,
+        const protos::interpreter::FieldInterpretation&   interpretation,
         const protos::interpreter::InterpretationResults& context);
     /**
      * @brief: Checks if the field can be interpreted safely.This encompasses checking if the field is of the correct
@@ -40,4 +40,4 @@ public:
     // std::optional<std::string> validate() const;
 };
 
-} // namespace datafw::dissector
+} // namespace protos::interpreter
