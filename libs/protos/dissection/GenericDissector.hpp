@@ -1,6 +1,6 @@
 #pragma once
-#include <protos/PacketDescriptor.hpp>
-#include <protos/PacketData.hpp>
+#include <protos/dissection/PacketDescriptor.hpp>
+#include <protos/dissection/PacketData.hpp>
 
 #include <functional>
 #include <ranges>

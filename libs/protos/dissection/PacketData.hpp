@@ -1,5 +1,5 @@
 #pragma once
-#include <protos/FieldData.hpp>
+#include <protos/dissection/FieldData.hpp>
 #include <format>
 
 namespace protos {
