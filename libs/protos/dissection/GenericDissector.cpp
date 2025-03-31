@@ -1,6 +1,6 @@
 #include "GenericDissector.hpp"
 #include "PacketData.hpp"
-#include <BitUtils.hpp>
+#include <protos/common/BitUtils.hpp>
 
 #include <algorithm>
 #include <map>

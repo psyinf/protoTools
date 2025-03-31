@@ -1,4 +1,4 @@
-#include <protos/FieldDescriptor.hpp>
+#include <protos/dissection/FieldDescriptor.hpp>
 
 int main([[maybe_unused]] int argc, [[maybe_unused]] char** argv)
 {

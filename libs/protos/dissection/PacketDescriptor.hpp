@@ -1,6 +1,6 @@
 #pragma once
-#include <protos/FieldDescriptor.hpp>
-#include <protos/BitUtils.hpp>
+#include <protos/dissection/FieldDescriptor.hpp>
+#include <protos/common/BitUtils.hpp>
 #include <stdexcept>
 #include <string>
 #include <vector>

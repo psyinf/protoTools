@@ -1,6 +1,6 @@
 #pragma once
 
-#include <protos/FieldDefinitions.hpp>
+#include <protos/dissection/FieldDefinitions.hpp>
 
 #include <vector>
 #include <cstddef>

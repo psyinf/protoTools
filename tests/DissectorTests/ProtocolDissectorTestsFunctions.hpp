@@ -1,6 +1,6 @@
 #pragma once
-#include <protos/GenericDissector.hpp>
-#include <protos/BitUtils.hpp>
+#include <protos/Dissection.hpp>
+#include <protos/common/BitUtils.hpp>
 
 using namespace protos::dissector;
 using namespace protos;
