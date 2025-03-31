@@ -22,7 +22,7 @@ public:
     {
         std::vector<std::string> res;
         std::ranges::transform(result, std::back_inserter(res), [](const auto& r) {
-            return datafw::value::variant_to_formatted_string(r.value, "{}");
+            return protos::value::variant_to_formatted_string(r.value, "{}");
         });
         return res;
     }

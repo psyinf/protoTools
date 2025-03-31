@@ -8,7 +8,7 @@ namespace protos::interpreter {
 struct NamedValue
 {
     std::string            name;
-    datafw::value::Variant value;
+    protos::value::Variant value;
 };
 
 struct InterpretationResult : NamedValue

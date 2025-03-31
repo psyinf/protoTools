@@ -14,7 +14,7 @@ struct FieldInterpretation
 {
 public:
     std::string                      name;                                 // name of the field as per metadata
-    datafw::value::Type              type{datafw::value::Type::UNDEFINED}; // type of the field
+    protos::value::Type              type{protos::value::Type::UNDEFINED}; // type of the field
     std::string                      format = "{}";                        // std/fmt::format string
     std::string                      mapper{};                             // name of a mapper to use
     std::vector<FieldInterpretation> subFields;                            // subfields of this field

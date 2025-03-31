@@ -10,7 +10,7 @@
 #include <cstdint>
 #include <variant>
 
-namespace datafw::value {
+namespace protos::value {
 
 template <typename T>
 struct always_false : std::false_type
