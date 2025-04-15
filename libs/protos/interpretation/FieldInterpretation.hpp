@@ -1,9 +1,9 @@
 #pragma once
 #include <protos/interpretation/GenericTypes.hpp>
-#include <memory>
-#include <optional>
+#include <protos/interpretation/InterpretationResult.hpp>
 #include <string>
 #include <functional>
+
 
 namespace protos::interpreter {
 
@@ -13,7 +13,7 @@ namespace protos::interpreter {
 struct FieldInterpretation
 {
 public:
-    using Mapper = std::function<protos::value::Variant(const protos::value::Variant&)>;
+    using Mapper = std::function<protos::interpreter::InterpretationResults(const protos::value::Variant&)>;
     std::string         name;                                 // name of the field as per metadata
     protos::value::Type type{protos::value::Type::UNDEFINED}; // type of the field
     std::string         format = "{}";                        // std/fmt::format string

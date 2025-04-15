@@ -150,9 +150,9 @@ protos::interpreter::InterpretationResults protos::interpreter::FieldInterpreter
     result = protos::value::as_variant(interpretation.type, data);
 
     // map the result. Mappers allow for type conversion
-    if (!interpretation.mapper)
+    if (interpretation.mapper)
     { // TODO: if no function is used, the type can be derived from the mapper source type
-        result = interpretation.mapper(result);
+        return interpretation.mapper(result);
     }
     return {{name, result, interpretation.format, interpretation.hidden}};
 }
