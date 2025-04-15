@@ -4,13 +4,13 @@
 #include "FieldInterpretation.hpp"
 #include <protos/dissection/GenericDissector.hpp>
 
-//#include <datafw/utils/BitConversions.hpp>
-//#include <datafw/utils/Once.hpp>
-//#include <datafw/registries/Registry.hpp>
-//#include <datafw/functional/cparse_funcs.hpp>
-//#include <datafw/protocols/detail/Placeholder.hpp>
-//#include <fmt/format.h>
-//#include <magic_enum.hpp>
+// #include <datafw/utils/BitConversions.hpp>
+// #include <datafw/utils/Once.hpp>
+// #include <datafw/registries/Registry.hpp>
+// #include <datafw/functional/cparse_funcs.hpp>
+// #include <datafw/protocols/detail/Placeholder.hpp>
+// #include <fmt/format.h>
+// #include <magic_enum.hpp>
 
 /*
  * Extract a value from the current InterpretationResults/Context
@@ -27,11 +27,10 @@ The data of a field is essentially handled as a separate protocol.
 This means that the field has a dissector and interpreter
 */
 std::optional<protos::interpreter::InterpretationResults> delegateToDissector(
-    const std::vector<std::byte>&                  data,
-    const std::string&                             name,
+    const std::vector<std::byte>&                     data,
+    const std::string&                                name,
     const protos::interpreter::InterpretationResults& context)
 {
-
     std::string dissector_name = datafw::detail::placeholders::replaceAllTokens(
         name, [&](std::string_view token) { return getFieldValueAsString(token, context); });
 
@@ -65,10 +64,11 @@ std::optional<protos::interpreter::InterpretationResults> delegateToDissector(
 /*
  * The data of a can be used to generate subfields.
  */
-protos::interpreter::InterpretationResults handleSubFields(const std::string&                             fieldName,
-                                                        const std::vector<std::byte>&                  data,
-                                                        const protos::interpreter::FieldInterpretation&  interpretation,
-                                                        const protos::interpreter::InterpretationResults& context)
+protos::interpreter::InterpretationResults handleSubFields(
+    const std::string&                                fieldName,
+    const std::vector<std::byte>&                     data,
+    const protos::interpreter::FieldInterpretation&   interpretation,
+    const protos::interpreter::InterpretationResults& context)
 {
     auto internal_context = protos::interpreter::InterpretationResults{context};
     auto result = std::vector<protos::interpreter::InterpretationResult>{};
@@ -84,13 +84,14 @@ protos::interpreter::InterpretationResults handleSubFields(const std::string&   
 #ifdef EXTENDED_INTERPRETER
 TODO : use a callback an external function to handle the expression
            /*
- * The data of a field can be used to generate a value using a function
- * Caveat: Currently the input and output type must be the same.
- */
+            * The data of a field can be used to generate a value using a function
+            * Caveat: Currently the input and output type must be the same.
+            */
 
-protos::value::Variant handleFunction(const std::vector<std::byte>&                  data,
-                                      const protos::interpreter::FieldInterpretation&  interpretation,
-                                      const protos::interpreter::InterpretationResults& context)
+           protos::value::Variant
+           handleFunction(const std::vector<std::byte>&                     data,
+                          const protos::interpreter::FieldInterpretation&   interpretation,
+                          const protos::interpreter::InterpretationResults& context)
 {
     std::string func_str = datafw::detail::placeholders::replaceAllTokens(
         interpretation.function, [&](std::string_view token) { return getFieldValueAsString(token, context); });
@@ -131,21 +132,13 @@ protos::value::Variant handleFunction(const std::vector<std::byte>&             
 }
 #endif
 protos::interpreter::InterpretationResults protos::interpreter::FieldInterpreter::interpret(
-    const std::string&                             name,
-    const std::vector<std::byte>&                  data,
-    const protos::interpreter::FieldInterpretation&  interpretation,
+    const std::string&                                name,
+    const std::vector<std::byte>&                     data,
+    const protos::interpreter::FieldInterpretation&   interpretation,
     const protos::interpreter::InterpretationResults& context)
 {
-    //using namespace datafw::protocol;
+    // using namespace datafw::protocol;
 
-    //datafw::functional::registerFunctions();
-    // if there is a dissector, delegate to it and return result
-    if (!interpretation.dissector.empty())
-    {
-        throw std::runtime_error("Dissector delegation not implemented");
-        //auto delegate_res = delegateToDissector(data, interpretation.dissector, context);
-        //if (delegate_res.has_value()) { return delegate_res.value(); }
-    }
     // subfields are handled separately
     if (!interpretation.subFields.empty()) { return handleSubFields(name, data, interpretation, context); }
 
@@ -153,40 +146,13 @@ protos::interpreter::InterpretationResults protos::interpreter::FieldInterpreter
     // where function and mapper are optional. If no function or mapper is present, the type is used
     // if the function is empty, the input is the type of the field as per description
     auto result = protos::value::Variant{};
+    // the mapper needs a type to work with
+    result = protos::value::as_variant(interpretation.type, data);
 
-    if (!interpretation.function.empty())
-    { // create a result from the function
-        throw std::runtime_error("Function delegation not implemented, consider refactoring to a callback");
-        //result = handleFunction(data, interpretation, context);
-    }
-    else
-    {
-        // the mapper needs a type to work with
-        result = protos::value::as_variant(interpretation.type, data);
-    }
     // map the result. Mappers allow for type conversion
-    if (!interpretation.mapper.empty())
+    if (!interpretation.mapper)
     { // TODO: if no function is used, the type can be derived from the mapper source type
-        // this needs to be added to the validation
-        throw std::runtime_error("Mapper delegation not implemented, consider refactoring to a callback");
-//         const std::string mapper_name = datafw::detail::placeholders::replaceAllTokens(
-//             interpretation.mapper, [&](std::string_view token) { return std::string{token} + "replaced"; });
-//         // check if the mapper exists
-// 
-//         if (!getRegistry<interfaces::FieldMapperInterface>().has(mapper_name))
-//         {
-//             throw std::runtime_error("Mapper " + mapper_name + " not found");
-//         }
-// 
-//         auto& mapper_ref = getRegistry<interfaces::FieldMapperInterface>().getRef(mapper_name);
-//         // TODO: check if the mapper can handle the type
-//         auto mapped = mapper_ref.map(name, result);
-//         if (!mapped.has_value())
-//         {
-//             return protos::interpreter::InterpretationResults{
-//                 {name, as_variant(interpretation.type, data), interpretation.format}};
-//         }
-//         return {{name, mapped.value().value, interpretation.format, interpretation.hidden}};
+        result = interpretation.mapper(result);
     }
     return {{name, result, interpretation.format, interpretation.hidden}};
 }
