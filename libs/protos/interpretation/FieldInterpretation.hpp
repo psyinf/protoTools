@@ -3,7 +3,7 @@
 #include <memory>
 #include <optional>
 #include <string>
-#include <vector>
+#include <functional>
 
 namespace protos::interpreter {
 
@@ -13,16 +13,17 @@ namespace protos::interpreter {
 struct FieldInterpretation
 {
 public:
-    std::string                      name;                                 // name of the field as per metadata
-    protos::value::Type              type{protos::value::Type::UNDEFINED}; // type of the field
-    std::string                      format = "{}";                        // std/fmt::format string
-    std::string                      mapper{};                             // name of a mapper to use
-    std::vector<FieldInterpretation> subFields;                            // subfields of this field
-    std::string                      dissector{}; // name of a dissector to parse a sub-protocol in this field
-    std::string                      function{};  // a function such as ("this & 0x0F << 4)
-    // properties
+    using Mapper = std::function<protos::value::Variant(const protos::value::Variant&)>;
+    std::string         name;                                 // name of the field as per metadata
+    protos::value::Type type{protos::value::Type::UNDEFINED}; // type of the field
+    std::string         format = "{}";                        // std/fmt::format string
+    Mapper              mapper;                               // function to map the field value
+
+    std::vector<FieldInterpretation> subFields; // subfields of this field
+    // std::string                      dissector{}; // name of a dissector to parse a sub-protocol in this field
+    //  properties
     bool littleEndian{true}; // if true, the field is interpreted as little-endian, otherwise big-endian
     bool hidden{false};      // if true, the field is not displayed in the output
 };
 
-} // namespace datafw::dissector
+} // namespace protos::interpreter
