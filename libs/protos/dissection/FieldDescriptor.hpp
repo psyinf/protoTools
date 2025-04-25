@@ -33,6 +33,14 @@ struct FieldDescriptor
 
     FieldDescriptor& withIsHeaderValue(bool is_header_value, std::vector<std::byte>&& value);
 
+    template <typename T>
+    FieldDescriptor& withValue(const T& value)
+    {
+        this->value = std::vector<std::byte>(reinterpret_cast<const std::byte*>(&value),
+                                                    reinterpret_cast<const std::byte*>(&value) + sizeof(T));
+        return *this;
+    }
+
     static auto make(const std::string& name, const std::string& description, uint16_t size) -> FieldDescriptor
     {
         return FieldDescriptor{ name, description, size, std::vector<std::byte>(size)};
