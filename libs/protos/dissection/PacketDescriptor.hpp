@@ -18,7 +18,7 @@ struct PacketDescriptor
     FieldDescriptor& get(std::string_view name)
     {
         auto iter = std::ranges::find_if(fields, [&name](const FieldDescriptor& f) { return f.name == name; });
-        if (iter == fields.end()) { throw std::runtime_error("Field not found"); }
+        if (iter == fields.end()) { throw std::runtime_error("Field not found: " + std::string{name}); }
         return *iter;
     }
 
