@@ -162,10 +162,13 @@ inline constexpr std::string variant_to_formatted_string(const Variant& v, const
             // as bytes
             else if constexpr (std::is_same_v<T, std::vector<std::byte>>)
             {
-                throw std::runtime_error("Not implemented");
-                //return std::format(format_str, fmt::join(arg, " "));
+                std::string result;
+                for (const auto& byte : arg)
+                {
+                    result += std::format("{:02x} ", static_cast<unsigned>(byte));
+                }
+                return result;
             }
-
             else { static_assert(always_false<T>::value, "non-exhaustive visitor!"); }
         },
         v);
