@@ -23,6 +23,7 @@ struct PacketDescriptor
     }
 
     template <typename T>
+        requires std::is_arithmetic_v<T>
     protos::dissector::PacketDescriptor& set(const std::string& fieldName, const T& value)
     {
         auto& field = get(fieldName);
@@ -30,7 +31,7 @@ struct PacketDescriptor
         return *this;
     }
 
-    template<>
+    
     protos::dissector::PacketDescriptor& set(const std::string& fieldName, const std::vector<std::byte>& value)
     {
        
