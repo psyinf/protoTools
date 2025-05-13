@@ -7,6 +7,7 @@
 #include <vector>
 #include <span>
 #include <ranges>
+#include <cstring>
 
 namespace protos::bytes {
 
