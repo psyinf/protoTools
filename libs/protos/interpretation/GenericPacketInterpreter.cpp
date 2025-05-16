@@ -4,6 +4,7 @@
 #include "FieldInterpreter.hpp"
 #include <common/Once.hpp>
 
+#include <print>
 
 bool protos::interpreter::GenericPacketInterpreter::hasField(const std::string& name) const
 {
@@ -58,7 +59,7 @@ protos::interpreter::InterpretationResults protos::interpreter::GenericPacketInt
 // }
 
 void protos::interpreter::GenericPacketInterpreter::handleMissingField(
-    const std::string&                       name,
+    const std::string&                          name,
     protos::interpreter::InterpretationResults& intpretation_result) const
 {
     switch (behaviors.emptyFieldBehavior)
@@ -69,8 +70,7 @@ void protos::interpreter::GenericPacketInterpreter::handleMissingField(
         break;
     case EmptyFieldBehavior::SKIP_AND_WARN_ONCE:
         protos::utils::once(name + getName(), [&]() {
-            throw std::runtime_error("decide if we use logger here");
-            // spdlog::warn("Field '{}' not found in GenericPacketInterpreter '{}'", name, getName());
+            std::println("Field '{}' not found in GenericPacketInterpreter '{}'", name, getName());
         });
         break;
     case EmptyFieldBehavior::EMPTY_STRING:
@@ -78,6 +78,15 @@ void protos::interpreter::GenericPacketInterpreter::handleMissingField(
         break;
     case EmptyFieldBehavior::DASH:
         intpretation_result.push_back({name, protos::value::Variant{"-"}});
+        break;
+    case EmptyFieldBehavior::TROW_ONCE:
+        protos::utils::once(name + getName(), [&]() {
+            throw std::runtime_error(
+                std::format("Field '{}' not found in GenericPacketInterpreter '{}'", name, getName()));
+        });
+        break;
+    case EmptyFieldBehavior::CALLBACK:
+        behaviors.emptyFieldCallback(name);
         break;
     }
 }

@@ -10,20 +10,30 @@ namespace protos::interpreter {
 /**
  * Interprets a packet from a collection of bytes (PacketData, usually from a dissector) into InterpretationResults
  */
-class GenericPacketInterpreter 
+class GenericPacketInterpreter
 {
 public:
+    /**
+     * When an empty field description is encountered, this behavior determines how it is handled.
+     */
+
     enum EmptyFieldBehavior
     {
-        SKIP,
-        SKIP_AND_WARN_ONCE,
-        EMPTY_STRING,
-        DASH
+        SKIP,               ///< Skip the field silently
+        SKIP_AND_WARN_ONCE, ///< Skip the field and log a warning once
+        EMPTY_STRING,       ///< Set the field to an empty string
+        DASH,               ///< Set the field to a dash '-'
+        TROW_ONCE,          ///< Throw an exception once
+        CALLBACK            ///< Call the callback function
     };
 
     struct Behaviors
     {
+        // callback function for an empty field descriptor
+        using EmptyFieldCallback = std::function<void(const std::string& fieldName)>;
+
         EmptyFieldBehavior emptyFieldBehavior{EmptyFieldBehavior::SKIP_AND_WARN_ONCE};
+        EmptyFieldCallback emptyFieldCallback{nullptr};
     };
 
     void setBehaviors(const Behaviors& behaviors) { this->behaviors = behaviors; }
@@ -34,7 +44,7 @@ public:
 
     bool hasField(const std::string& name) const;
 
-    void handleMissingField(const std::string&                       name,
+    void handleMissingField(const std::string&                          name,
                             protos::interpreter::InterpretationResults& intpretation_result) const;
 
     const FieldInterpretation& findInterpreterForField(const std::string& name) const;
@@ -46,4 +56,4 @@ public:
     std::string                                          name;
 };
 
-} // namespace datafw::dissector
+} // namespace protos::interpreter
