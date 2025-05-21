@@ -85,7 +85,7 @@ void protos::interpreter::GenericPacketInterpreter::handleMissingField(
                 std::format("Field '{}' not found in GenericPacketInterpreter '{}'", name, getName()));
         });
         break;
-    case EmptyFieldBehavior::CALLBACK:
+    case EmptyFieldBehavior::CALL_BACK:
         behaviors.emptyFieldCallback(name);
         break;
     }

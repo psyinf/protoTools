@@ -24,7 +24,7 @@ public:
         EMPTY_STRING,       ///< Set the field to an empty string
         DASH,               ///< Set the field to a dash '-'
         TROW_ONCE,          ///< Throw an exception once
-        CALLBACK            ///< Call the callback function
+        CALL_BACK           ///< Call the callback function
     };
 
     struct Behaviors
