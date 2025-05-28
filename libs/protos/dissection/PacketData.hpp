@@ -7,6 +7,17 @@ namespace protos::dissector {
 // describes structure of a byte-oriented packet of fields.
 struct PacketData
 {
+
+    PacketData clone() const
+    {
+        PacketData clonePacket {};
+        clonePacket.name = name;
+        for (auto& field : fields)
+        {
+            clonePacket.fields.push_back({field.name, field.value});
+        }
+        return clonePacket;
+    };
     std::string            name; // usually the name of the protocol
     std::vector<FieldData> fields;
 
