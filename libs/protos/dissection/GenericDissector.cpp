@@ -158,7 +158,7 @@ std::optional<protos::dissector::PacketData> protos::dissector::GenericDissector
     auto fixed_size = (std::ranges::all_of(
         packet_template.fields, [](const protos::dissector::FieldDescriptor& f) { return f.determinesSizeOf.empty(); }));
 
-    if (true)
+    if (fixed_size)
     {
         auto current_data_index = 0;
         // if all fields are fixed size, we can process the bytes in one go
