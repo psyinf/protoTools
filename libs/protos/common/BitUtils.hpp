@@ -22,6 +22,7 @@ constexpr T as_number(const std::span<const std::byte>& container)
 }
 
 template <class T>
+    requires std::is_arithmetic_v<T>
 constexpr auto as_bytes(const T& value)
 {
     // vector of bytes
@@ -59,6 +60,6 @@ T to_number(const std::span<const std::byte>& container)
 {
     if (container.size() != sizeof(T)) { throw std::runtime_error("Invalid size"); }
     return *std::bit_cast<T*>(container.data());
-} 
+}
 
 } // namespace protos::bytes
