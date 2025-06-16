@@ -21,7 +21,7 @@ TEST_CASE("simple struct", "[ProtocolDissector]")
 
     auto res = test_dissect(dissector, bytes);
 
-    auto header_val = as_chars(res->get("header").value);
+    auto header_val = as_chars_span(res->get("header").value);
     auto x_val = protos::bytes::to_number<double>(res->get("x").value);
     auto y_val = protos::bytes::to_number<double>(res->get("y").value);
 

@@ -7,7 +7,6 @@
 #include <vector>
 #include <span>
 #include <ranges>
-#include <cstring>
 
 namespace protos::bytes {
 
@@ -22,7 +21,6 @@ constexpr T as_number(const std::span<const std::byte>& container)
 }
 
 template <class T>
-    requires std::is_arithmetic_v<T>
 constexpr auto as_bytes(const T& value)
 {
     // vector of bytes
@@ -30,10 +28,16 @@ constexpr auto as_bytes(const T& value)
                                   reinterpret_cast<const std::byte*>(&value) + sizeof(T));
 }
 
-template <class T>
-constexpr std::span<const char> as_chars(const T& container)
+std::span<const std::byte> as_bytes_span(const std::ranges::common_range auto& container)
+    requires std::ranges::viewable_range<decltype(container)>
 {
-    return std::span<const char>{std::bit_cast<char*>(container.data()), container.size()};
+    return std::span<const std::byte>(reinterpret_cast<const std::byte*>(container.data()), container.size());
+}
+
+std::span<const char> as_chars_span(const std::ranges::common_range auto& container)
+    requires std::ranges::viewable_range<decltype(container)>
+{
+    return std::span<const char>(reinterpret_cast<const char*>(container.data()), container.size());
 }
 
 /**
