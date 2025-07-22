@@ -18,7 +18,7 @@ constexpr std::array<char, N - 1> to_array_wo_null(const char (&str)[N])
 }
 
 std::optional<protos::dissector::PacketData> test_dissect(protos::dissector::GenericDissector& dissector,
-                                               const std::span<const std::byte>&    bytes)
+                                                          const std::span<const std::byte>&    bytes)
 {
     std::optional<protos::dissector::PacketData> res;
     // dissector.setPacketDataCallback([&res](const PacketData& packet) { res.emplace(packet); });
@@ -35,8 +35,6 @@ std::optional<protos::dissector::PacketData> test_dissect(protos::dissector::Gen
     REQUIRE(res2.has_value());
     return res;
 }
-
-
 
 struct SimpleTestPacket
 {
@@ -66,4 +64,11 @@ struct DependentSizeWithCRCPacket
     const uint8_t          size{Size};
     std::array<char, Size> data;
     uint8_t                crc{0};
+};
+
+template <uint8_t Size>
+struct PacketWithSelfdescribingSizeField
+{
+    const uint8_t          field1;
+    std::array<char, Size> data;
 };

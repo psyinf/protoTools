@@ -76,3 +76,27 @@ TEST_CASE("dependent removal struct", "[ProtocolDissector]")
     REQUIRE(!res->has("CRC"));
     // REQUIRE(res->get("CRC").value.size() == 0);
 }
+
+TEST_CASE("data_type_with_selfdescribing_length", "[ProtocolDissector]")
+{
+    auto self_describing_size_calculation = [](const protos::dissector::FieldDescriptor& field, std::span<std::byte> current_buffer) {
+        // the first byte of the field value is the size of the data
+        return static_cast<uint16_t>(current_buffer[0]) - 1;
+    };
+    // a type that contains the length of its own data in the first byte
+
+    PacketDescriptor packet_template;
+    packet_template.add({.name{"Field1"}, .size{1}});
+    packet_template.add(
+        {.name{"SelfDescribingField2"}, .size{1}, .externalSizeCalculation{self_describing_size_calculation}});
+    //first byte = count (5) , following bytes = "helo"
+    PacketWithSelfdescribingSizeField<5> packet{.field1{0x01}, .data{0x05, 0x68, 0x65, 0x6c, 0x6f}};
+    GenericDissector                     dissector{packet_template};
+
+    auto bytes = std::as_bytes(std::span{&packet, 1});
+    auto res = test_dissect(dissector, bytes);
+    REQUIRE(res->get("Field1").value[0] == std::byte(0x01));
+    REQUIRE(res->get("SelfDescribingField2").value.size() == 4); // has the calculated size of 4
+    
+
+}
