@@ -1,6 +1,7 @@
 #pragma once
 #include <protos/dissection/FieldDescriptor.hpp>
 #include <protos/common/BitUtils.hpp>
+#include <algorithm>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -31,10 +32,8 @@ struct PacketDescriptor
         return *this;
     }
 
-    
     protos::dissector::PacketDescriptor& set(const std::string& fieldName, const std::vector<std::byte>& value)
     {
-       
         auto& field = get(fieldName);
         if (field.size != value.size() && field.size != 0) { throw std::runtime_error("Size mismatch"); }
         field.value = value;
@@ -42,7 +41,14 @@ struct PacketDescriptor
         return *this;
     }
 
+    bool isFixedSize() const
+    {
+        return std::ranges::all_of(fields, [](const FieldDescriptor& f) {
+            return f.hasFixedSize();
+        });
+    }
+
     auto getName() const { return name; }
 };
 
-} // namespace protos
+} // namespace protos::dissector

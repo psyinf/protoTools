@@ -32,6 +32,10 @@ protected:
     void makePacketStack();
     void newPacket();
     bool stackIsEmpty() const;
+    bool stackTopIsCertainlyZeroSized() const
+    {
+        return stackTop().size == 0 && stackTop().externalSizeCalculation != nullptr;
+    }
 
     protos::dissector::FieldDescriptor& getFieldInStack(std::string_view name);
 
@@ -45,7 +49,7 @@ protected:
 
 private:
     std::deque<protos::dissector::FieldDescriptor> current_packet_stack;
-    std::vector<std::byte>                        current_message_buffer;
+    std::vector<std::byte>                         current_message_buffer;
     protos::dissector::PacketData                  current_packet;  // the packet currently being built
     const protos::dissector::PacketDescriptor      packet_template; // the packet template
 };
