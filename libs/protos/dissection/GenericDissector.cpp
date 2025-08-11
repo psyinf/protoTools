@@ -138,13 +138,13 @@ uint32_t protos::dissector::GenericDissector::getSizeFromFieldValue(const protos
     switch (field.size)
     {
     case 1:
-        return protos::bytes::as_number<uint8_t>(current_packet.get(field.name).value);
+        return protos::bytes::to_number<uint8_t>(current_packet.get(field.name).value);
     case 2:
-        return protos::bytes::as_number<uint16_t>(current_packet.get(field.name).value);
+        return protos::bytes::to_number<uint16_t>(current_packet.get(field.name).value);
     case 4:
-        return protos::bytes::as_number<uint32_t>(current_packet.get(field.name).value);
+        return protos::bytes::to_number<uint32_t>(current_packet.get(field.name).value);
     case 8:
-        return protos::bytes::as_number<uint64_t>(current_packet.get(field.name).value);
+        return protos::bytes::to_number<uint64_t>(current_packet.get(field.name).value);
     default:
         throw std::runtime_error(
             std::format("Unsupported size for field describing a size in field '{}' of GenericDissector '{}' ",

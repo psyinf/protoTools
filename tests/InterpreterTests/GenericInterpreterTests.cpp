@@ -47,7 +47,7 @@ TEST_CASE("simpleField", "[GenericInterpreter]")
     });
 
     auto packet_data = PacketData{};
-    auto v = protos::bytes::as_bytes(0xff11ee22);
+    auto v = protos::bytes::to_bytes(0xff11ee22);
     packet_data.add({"header", v});
 
     auto result = interpreter.interpretPacketData(packet_data);
