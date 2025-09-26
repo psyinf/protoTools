@@ -68,20 +68,18 @@ TEST_CASE("dependent removal struct", "[ProtocolDissector]")
     auto bytes_complete = std::as_bytes(std::span{&packet, 1});
     auto bytes = bytes_complete.subspan(0, 1);
 
-    float f = 3.0f;
     auto  res = test_dissect(dissector, bytes);
 
     REQUIRE(res->get("SIZE").value[0] == std::byte(0));
     REQUIRE(res->get("DATA").value.size() == 0);
     REQUIRE(!res->has("CRC"));
-    // REQUIRE(res->get("CRC").value.size() == 0);
 }
 
 TEST_CASE("data_type_with_selfdescribing_length", "[ProtocolDissector]")
 {
     auto self_describing_size_calculation = [](const protos::dissector::FieldDescriptor& field, std::span<std::byte> current_buffer) {
         // the first byte of the field value is the size of the data
-        return static_cast<uint16_t>(current_buffer[0]) - 1;
+        return FieldDescriptor::SizeCallCallbackResult(false, static_cast<uint16_t>(current_buffer[0]) - 1, 1);
     };
     // a type that contains the length of its own data in the first byte
 
@@ -99,4 +97,38 @@ TEST_CASE("data_type_with_selfdescribing_length", "[ProtocolDissector]")
     REQUIRE(res->get("SelfDescribingField2").value.size() == 4); // has the calculated size of 4
     
 
+}
+
+TEST_CASE("data_type_with_selfdescribing_length_findnullterminator", "[ProtocolDissector]")
+{
+    auto self_describing_size_calculation = [](const protos::dissector::FieldDescriptor& field,
+                                               std::span<std::byte>                      current_buffer) {
+      
+            // find the null terminator in the buffer
+        auto it = std::find(current_buffer.begin(), current_buffer.end(), std::byte{0});
+        if (it != current_buffer.end()) {
+            // found null terminator, calculate size
+            size_t size = std::distance(current_buffer.begin(), it) + 1; // include null terminator
+            // return size without needing more bytes, we didn't consume any extra bytes
+            return FieldDescriptor::SizeCallCallbackResult(false, static_cast<uint16_t>(size), 0);
+        } else {
+            // null terminator not found, need more bytes
+            return FieldDescriptor::SizeCallCallbackResult(true, 0, 0);
+        }
+    };
+    // a type that contains the length of its own data in the first byte
+
+    PacketDescriptor packet_template;
+    packet_template.add({.name{"Field1"}, .size{1}});
+    packet_template.add(
+        {.name{"SelfDescribingField2"}, .size{1}, .externalSizeCalculation{self_describing_size_calculation}});
+    // bytes = "helo" with null terminator
+    // field that has null terminated data
+    PacketWithSelfdescribingSizeField<5> packet{.field1{0x01}, .data{0x68, 0x65, 0x6c, 0x6f, 0x0}};
+    GenericDissector                     dissector{packet_template};
+
+    auto bytes = std::as_bytes(std::span{&packet, 1});
+    auto res = test_dissect(dissector, bytes);
+    REQUIRE(res->get("Field1").value[0] == std::byte(0x01));
+    REQUIRE(res->get("SelfDescribingField2").value.size() == 5); // has the calculated size of 4
 }
