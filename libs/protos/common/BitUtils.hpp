@@ -1,8 +1,8 @@
 #pragma once
 
 #include <bit>
+#include <cstring> //for std::memcpy
 #include <exception>
-#include <memory>
 #include <span>
 #include <stdexcept>
 #include <vector>

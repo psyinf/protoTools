@@ -21,6 +21,8 @@ struct PacketData
         else { throw std::runtime_error(std::format("Field {} not found in PacketData {}", field_name, name)); }
     }
 
+    // this is a const overload of get, the const_cast is safe here because we are not modifying the object
+    // we really don't want to duplicate the code of get.
     const FieldData& get(const std::string& field_name) const { return const_cast<PacketData*>(this)->get(field_name); }
 
     bool has(const std::string& field_name) const
@@ -30,6 +32,5 @@ struct PacketData
     }
 
     bool operator==(const PacketData& other) const { return name == other.name && fields == other.fields; }
-
 };
-} // namespace protos
+} // namespace protos::dissector
