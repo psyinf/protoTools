@@ -1,5 +1,6 @@
 #pragma once
 #include <cstdint>
+#include <optional>
 #include <functional>
 #include <span>
 #include <string>
@@ -14,8 +15,18 @@ namespace protos::dissector {
 
 struct FieldDescriptor
 {
+    struct SizeCallCallbackResult
+    {
+        SizeCallCallbackResult(bool more_bytes, uint16_t value, uint8_t consumed)
+            : need_more_bytes(more_bytes), result_value(value), bytes_consumed(consumed)
+        {
+        }
+        bool need_more_bytes{}; //more bytes are needed to determine the size
+        uint16_t result_value{};
+        uint8_t bytes_consumed{}; //the number of bytes consumed from the start of the buffer that don't contribute to the value
+    };
     // TODO: this might need more context
-    using SizeCalcCallback = std::function<uint16_t(const FieldDescriptor&, std::span<std::byte> available_bytes)>;
+    using SizeCalcCallback = std::function<SizeCallCallbackResult(const FieldDescriptor&, std::span<std::byte> available_bytes)>;
     using FieldId = std::string;
 
     FieldId     name;        ///< name of the field

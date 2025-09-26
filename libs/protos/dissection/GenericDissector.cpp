@@ -51,12 +51,20 @@ std::optional<protos::dissector::PacketData> protos::dissector::GenericDissector
             // we don't have enough bytes yet, so we can't calculate the size
             return std::nullopt;
         }
-        const auto size_used_for_calculation = current_message_buffer.size();
-        const auto expected_size = stackTop().externalSizeCalculation(stackTop(),current_message_buffer);
+        auto       size_used_for_calculation = current_message_buffer.size();
+        const auto expected_size_res = stackTop().externalSizeCalculation(stackTop(), current_message_buffer);
+        if (expected_size_res.need_more_bytes)
+        {
+            // the callback could not determine the size yet, wait for more bytes
+            return std::nullopt;
+        }
+        auto expected_size = expected_size_res.result_value;
+        size_used_for_calculation = expected_size_res.bytes_consumed;
         stackTop().size = expected_size;              // set the size of the field to the calculated size
         stackTop().externalSizeCalculation = nullptr; // reset the callback, we only need it once
         // remove the bytes that were used to calculate the size (should the callback tell us to do so?)
-        current_message_buffer.erase(current_message_buffer.begin(), current_message_buffer.begin() +size_used_for_calculation);
+        current_message_buffer.erase(current_message_buffer.begin(),
+                                     current_message_buffer.begin() + size_used_for_calculation);
     }
     // check if we have a complete field
     if (!stackIsEmpty() && current_message_buffer.size() == stackTop().size)
@@ -167,10 +175,10 @@ bool protos::dissector::GenericDissector::matchesHeader(const std::vector<std::b
     return false;
 }
 
-std::optional<protos::dissector::PacketData> protos::dissector::GenericDissector::addBytes(std::span<const std::byte> bytes)
+std::optional<protos::dissector::PacketData> protos::dissector::GenericDissector::addBytes(
+    std::span<const std::byte> bytes)
 {
     // check if all fields are fixed size (.e.g. determinesSizeOf is empty)
-   
 
     if (packet_template.isFixedSize())
     {
@@ -202,7 +210,8 @@ std::optional<protos::dissector::PacketData> protos::dissector::GenericDissector
             auto current_end = bytes.begin() + current_data_index + field_size;
             current_data_index += field_size;
 
-            auto field_data = protos::dissector::FieldData{field.name, std::vector<std::byte>(current_start, current_end)};
+            auto field_data =
+                protos::dissector::FieldData{field.name, std::vector<std::byte>(current_start, current_end)};
             packet.add(field_data);
             // remember the size of the field if it determines the size of another field
             if (!field.determinesSizeOf.empty()) { field_sizes[field.determinesSizeOf] = getSizeFromFieldValue(field); }
