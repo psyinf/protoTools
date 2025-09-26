@@ -73,7 +73,7 @@ void ProtocolDirectoryServer::runRequestServer(std::stop_token st)
             addProtocol(entry);
             rep_socket->send(zmq::message_t("OK"), zmq::send_flags::none);
         }
-        else if (req == std::string("remove"))
+        else if (req == REMOVE_COMMAND)
         {
             zmq::message_t reply;
             std::ignore = rep_socket->recv(reply);
