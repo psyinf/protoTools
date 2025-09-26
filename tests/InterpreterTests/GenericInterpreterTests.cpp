@@ -31,7 +31,7 @@ TEST_CASE("simpleField", "[GenericInterpreter]")
     using namespace protos::interpreter;
     using namespace protos::value::operators;
     using namespace std::string_literals;
-    // packet descriptor
+    // Packet descriptor
     PacketDescriptor packet_template;
     FieldDescriptor  field{"header", "Header field", 4};
 
