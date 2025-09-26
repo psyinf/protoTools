@@ -5,7 +5,6 @@
 #include <span>
 #include <stdexcept>
 #include <vector>
-#include <span>
 #include <ranges>
 
 /*
