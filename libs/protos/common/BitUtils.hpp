@@ -2,6 +2,7 @@
 
 #include <bit>
 #include <exception>
+#include <memory>
 #include <span>
 #include <stdexcept>
 #include <vector>
