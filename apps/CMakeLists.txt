@@ -1,1 +1,8 @@
 add_subdirectory(_template)
+#add_subdirectory(CanTest)
+add_subdirectory(ProtocolPusher)
+IF (WIN32)
+add_subdirectory(ProtocolClient)
+ENDIF()
+add_subdirectory(ProtocolDemoServer)
+add_subdirectory(ProtoProxy)
