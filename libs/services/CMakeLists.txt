@@ -1,22 +1,30 @@
-project(protos)
+project(protos_services CXX)
 set(CMAKE_CXX_STANDARD 23)
+#linker language for header only
+
+
 file(GLOB_RECURSE HEADER_FILES 	CONFIGURE_DEPENDS "*.h*")
 file(GLOB_RECURSE CPP_FILES 	CONFIGURE_DEPENDS "*.cpp")
 
 add_library(${PROJECT_NAME} STATIC)
-add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
+add_library(protos::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
+set_target_properties(${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE CXX)
 
 target_sources(${PROJECT_NAME}
     PRIVATE
     ${CPP_FILES}
     PUBLIC
     ${HEADER_FILES}
-
 )
 
 target_link_libraries(${PROJECT_NAME}
     PUBLIC
-    #nlohmann_json::nlohmann_json
+    PRIVATE
+    spdlog::spdlog
+    protos::protos
+    nlohmann_json::nlohmann_json
+    cppzmq-static
+    libzmq-static
 )
 
 target_include_directories(

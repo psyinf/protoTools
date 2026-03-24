@@ -1,0 +1,54 @@
+#pragma once
+#include <protos/dissection/FieldDescriptor.hpp>
+#include <protos/common/BitUtils.hpp>
+#include <algorithm>
+#include <stdexcept>
+#include <string>
+#include <vector>
+
+namespace protos::dissector {
+
+// describes a packet as fields of bytes with an associated name, type and further contextual information
+struct PacketDescriptor
+{
+    std::vector<FieldDescriptor> fields;
+    std::string                  name;
+
+    void add(FieldDescriptor&& field) { fields.emplace_back(field); }
+
+    FieldDescriptor& get(std::string_view name)
+    {
+        auto iter = std::ranges::find_if(fields, [&name](const FieldDescriptor& f) { return f.name == name; });
+        if (iter == fields.end()) { throw std::runtime_error("Field not found: " + std::string{name}); }
+        return *iter;
+    }
+
+    template <typename T>
+        requires std::is_arithmetic_v<T>
+    protos::dissector::PacketDescriptor& set(const std::string& fieldName, const T& value)
+    {
+        auto& field = get(fieldName);
+        field.value = bytes::to_bytes(value, field.size);
+        return *this;
+    }
+
+    protos::dissector::PacketDescriptor& set(const std::string& fieldName, const std::vector<std::byte>& value)
+    {
+        auto& field = get(fieldName);
+        if (field.size != value.size() && field.size != 0) { throw std::runtime_error("Size mismatch"); }
+        field.value = value;
+        field.size = value.size();
+        return *this;
+    }
+
+    bool isFixedSize() const
+    {
+        return std::ranges::all_of(fields, [](const FieldDescriptor& f) {
+            return f.hasFixedSize();
+        });
+    }
+
+    auto getName() const { return name; }
+};
+
+} // namespace protos::dissector
