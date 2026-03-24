@@ -1,7 +1,7 @@
 #pragma once
 
 #include <bit>
-#include <cstring> //for std::memcpy
+#include <cstring>
 #include <exception>
 #include <span>
 #include <stdexcept>

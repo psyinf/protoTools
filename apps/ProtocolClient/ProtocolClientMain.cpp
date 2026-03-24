@@ -6,9 +6,7 @@
 #include <services/ProtoUtils.hpp>
 #include <services/directory/ProtocolDirectoryClient.hpp>
 #include <future>
-#ifdef _WIN32
 #include <conio.h>
-#endif
 #include <spdlog/spdlog.h>
 #include <CLI/CLI.hpp>
 
