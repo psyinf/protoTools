@@ -61,7 +61,7 @@ void ProtocolDirectoryServer::runRequestServer(std::stop_token st)
         { //
             rep_socket->send(zmq::message_t(_complete_list_json), zmq::send_flags::none);
         }
-        else if (req == ADD_COMMAND)
+        else if (req == std::string("add"))
         {
             zmq::message_t reply;
             std::ignore = rep_socket->recv(reply);
@@ -73,7 +73,7 @@ void ProtocolDirectoryServer::runRequestServer(std::stop_token st)
             addProtocol(entry);
             rep_socket->send(zmq::message_t("OK"), zmq::send_flags::none);
         }
-        else if (req == REMOVE_COMMAND)
+        else if (req == std::string("remove"))
         {
             zmq::message_t reply;
             std::ignore = rep_socket->recv(reply);

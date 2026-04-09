@@ -10,7 +10,9 @@ option(BUILD_APPS "Build apps" ON)
 
 
 include(cmake/PreventInSourceBuilds.cmake)
-include(cmake/coverage.cmake)
+if (IS_STANDALONE_PROJECT)
+    include(cmake/coverage.cmake)
+endif()
 include(cmake/stacktrace.cmake)
 include(cmake/setup_cpm.cmake)
 include(cmake/deps_cpm.cmake)
