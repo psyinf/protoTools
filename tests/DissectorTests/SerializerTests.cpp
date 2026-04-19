@@ -1,4 +1,5 @@
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/matchers/catch_matchers_string.hpp>
 
 #include <protos/dissection/FieldDescriptor.hpp>
 #include <protos/dissection/PacketDescriptor.hpp>
@@ -112,6 +113,18 @@ TEST_CASE("externalSizeCalculation is silently dropped on save", "[Serializer]")
     auto loaded = j.get<FieldDescriptor>();
     REQUIRE(loaded.name == "payload");
     REQUIRE_FALSE(static_cast<bool>(loaded.externalSizeCalculation));
+}
+
+TEST_CASE("save/load throw on unreachable paths", "[Serializer]")
+{
+    PacketDescriptor pd;
+
+    // Path under a directory that cannot exist.
+    const std::string bad = "Z:/definitely/not/a/real/dir/out.json";
+    REQUIRE_THROWS_WITH(protos::dissector::save(bad, pd),
+                        Catch::Matchers::ContainsSubstring("cannot open"));
+    REQUIRE_THROWS_WITH(protos::dissector::load<PacketDescriptor>(bad),
+                        Catch::Matchers::ContainsSubstring("cannot open"));
 }
 
 TEST_CASE("JSON output is human-readable and stable", "[Serializer]")

@@ -5,7 +5,9 @@
 #include <nlohmann/json.hpp>
 
 #include <cstddef>
+#include <format>
 #include <fstream>
+#include <stdexcept>
 #include <string>
 
 // nlohmann does not know std::byte natively. Serialize each byte as a plain
@@ -39,7 +41,8 @@ NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(PacketDescriptor, fields, name)
 template <class T>
 void save(const std::string& path, const T& obj)
 {
-    std::ofstream  os(path);
+    std::ofstream os(path);
+    if (!os.is_open()) { throw std::runtime_error(std::format("save: cannot open '{}' for writing", path)); }
     nlohmann::json j = obj;
     os << j.dump(2);
 }
@@ -47,7 +50,8 @@ void save(const std::string& path, const T& obj)
 template <class T>
 T load(const std::string& path)
 {
-    std::ifstream  is(path);
+    std::ifstream is(path);
+    if (!is.is_open()) { throw std::runtime_error(std::format("load: cannot open '{}' for reading", path)); }
     nlohmann::json j;
     is >> j;
     return j.get<T>();
