@@ -70,22 +70,24 @@ mapper returns is what the caller sees.
 Three canonical uses — enum, scaled numeric, and fan-out — are demonstrated in
 [`examples/08_interpreter_mappers`](../../examples/08_interpreter_mappers/).
 
-### `littleEndian` — documented but not honored
+### `littleEndian`
 
-`FieldInterpretation::littleEndian` is declared in the struct (default `true`)
-but **the current `FieldInterpreter::interpret` implementation never reads it**.
-`as_variant` goes straight to `std::bit_cast`, so interpretation is always host
-byte order.
+Default `true`. Set to `false` for fields that arrive big-endian on the wire.
+`FieldInterpreter::interpret` reverses the field's bytes before calling
+`as_variant` when the declared endianness disagrees with `std::endian::native`.
+Applies only to numeric types (`INTEGER`, `UNSIGNED_INTEGER`, `FLOAT`);
+`STRING` and `BYTES` are stream-order preserving, and `BOOL` is single-byte so
+the flag is a no-op there.
 
-If your ICD specifies BE fields on an LE host, you have three options:
+```cpp
+interp.addField({.name = "seq_be", .type = Type::UNSIGNED_INTEGER,
+                 .littleEndian = false});
+interp.addField({.name = "ts_le",  .type = Type::UNSIGNED_INTEGER});
+```
 
-1. Attach a `mapper` that reverses the bytes and re-interprets. This is the
-   workaround used in [`examples/07_icd_mixed_endian`](../../examples/07_icd_mixed_endian/).
-2. Pre-reverse the bytes in the `FieldData` before handing it to the interpreter.
-3. Wait for the flag to be wired up, then flip it to `false`. If/when that lands,
-   simplify your descriptors and delete the mappers.
-
-See [endianness](./endianness.md) for the full discussion.
+For the pipeline-wide discussion see [endianness](./endianness.md); for a
+worked mixed-endian record see
+[`examples/07_icd_mixed_endian`](../../examples/07_icd_mixed_endian/).
 
 ### `hidden`
 

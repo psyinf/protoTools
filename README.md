@@ -101,8 +101,6 @@ examples:
 
 ## Known gaps (documented where relevant)
 
-- `FieldInterpretation::littleEndian` is declared but not yet honored; see
-  [endianness](./doc/library/endianness.md) for the mapper-based workaround.
 - `ProtocolDirectoryClient`'s change-notification PUB subscription is declared
   but not wired up; today clients update via explicit `queryProtocols()`.
 

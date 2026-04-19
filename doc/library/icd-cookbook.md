@@ -215,11 +215,6 @@ big-endian on the wire:
 - **Vehicle Telemetry** (`msg_id = 0x05`) — embedded `Vector3` position
   (three scaled `Int16`s), `UInt8` battery, `UInt32` checksum trailer.
 
-> **Note.** The `.littleEndian = false` syntax below is the target state after
-> `feat/little-endian` lands. Until that merges, substitute a BYTES + swap
-> mapper as shown in [`examples/07_icd_mixed_endian`](../../examples/07_icd_mixed_endian/);
-> everything else compiles today.
-
 ### Shared `Vector3` sub-dissector
 
 Define once, reuse across every message that embeds the struct:
