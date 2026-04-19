@@ -103,10 +103,6 @@ examples:
 
 - `FieldInterpretation::littleEndian` is declared but not yet honored; see
   [endianness](./doc/library/endianness.md) for the mapper-based workaround.
-- `libs/protos/serializer/GenericDissectorSerializer.hpp` still includes the
-  pre-refactor `<datafw/protocols/...>` headers and does not compile today —
-  the v1.0.0 release advertises serialization, but the file was orphaned by
-  the `datafw::` → `protos::` namespace move.
 - `ProtocolDirectoryClient`'s change-notification PUB subscription is declared
   but not wired up; today clients update via explicit `queryProtocols()`.
 

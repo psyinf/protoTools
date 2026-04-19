@@ -89,14 +89,6 @@ out deliberately in commit `bd2eb23`).
   it up in `FieldInterpreter::interpret` (reverse bytes before `as_variant`
   when the flag disagrees with the host byte order) removes the need for the
   swap-mapper workaround documented in [endianness](./library/endianness.md).
-- `libs/protos/serializer/GenericDissectorSerializer.hpp` still `#include`s
-  the pre-refactor headers `<datafw/protocols/FieldDescriptor.hpp>` and
-  `<datafw/protocols/PacketDescriptor.hpp>` — paths that don't exist after the
-  `datafw::` → `protos::` namespace move. The header is effectively dead code
-  today. Porting the `NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT` glue to
-  the current `protos::dissector::FieldDescriptor` / `PacketDescriptor` layout
-  would restore the serializer feature that the v1.0.0 release notes already
-  advertise.
 - The directory client's PUB subscription is declared but not implemented.
   Today clients get updates only by explicitly calling `queryProtocols`.
 - `PacketHelper` is marked experimental in the source ("you're on your own
