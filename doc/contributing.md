@@ -85,10 +85,6 @@ reading the source — distinct from *intentional* removals (like the legacy
 `subFields` expression engine and the registry-based sub-dissector, both torn
 out deliberately in commit `bd2eb23`).
 
-- `FieldInterpretation::littleEndian` is declared but never consulted. Wiring
-  it up in `FieldInterpreter::interpret` (reverse bytes before `as_variant`
-  when the flag disagrees with the host byte order) removes the need for the
-  swap-mapper workaround documented in [endianness](./library/endianness.md).
 - The directory client's PUB subscription is declared but not implemented.
   Today clients get updates only by explicitly calling `queryProtocols`.
 - `PacketHelper` is marked experimental in the source ("you're on your own
