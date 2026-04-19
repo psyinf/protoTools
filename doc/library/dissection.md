@@ -200,6 +200,27 @@ to bytes:
 bytes as it writes them — useful when serialising a host-order descriptor to a BE
 wire format.
 
+## Persisting descriptors
+
+`libs/protos/serializer/GenericDissectorSerializer.hpp` provides JSON round-trip
+for `FieldDescriptor` and `PacketDescriptor` plus two helpers:
+
+```cpp
+#include <protos/serializer/GenericDissectorSerializer.hpp>
+using namespace protos::dissector;
+
+save("icd.json", my_packet_descriptor);
+auto loaded = load<PacketDescriptor>("icd.json");
+```
+
+The shape-only subset is serialized: `name`, `description`, `size`, `value`,
+`determinesSizeOf`, `sizeDeterminesExistenceOf`, `isHeaderValue`, `sizeOffset`.
+`externalSizeCalculation` is a `std::function` and is **not** persisted —
+re-attach any size callbacks in code after `load()`. Byte values are encoded
+as `"0xNN"` strings (`["0x49", "0x43", "0x44", "0x31"]`) — human-readable for
+eyeballing ICD descriptors. Parsing is case-insensitive and accepts the `0x`
+prefix optionally.
+
 ## Related
 
 - [Interpretation](./interpretation.md) — turn `PacketData` into typed, formatted results.
