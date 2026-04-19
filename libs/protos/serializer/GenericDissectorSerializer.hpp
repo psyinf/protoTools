@@ -10,14 +10,24 @@
 #include <fstream>
 #include <stdexcept>
 
-// nlohmann does not know std::byte natively. Serialize each byte as a plain
-// unsigned integer; FieldDescriptor::value is therefore a JSON array of numbers.
+// nlohmann does not know std::byte natively. Serialize each byte as an
+// uppercase "0xNN" hex string - readable when eyeballing an ICD descriptor
+// and explicit about the encoding. FieldDescriptor::value is therefore a
+// JSON array of strings.
 namespace nlohmann {
 template <>
 struct adl_serializer<std::byte>
 {
-    static void to_json(json& j, const std::byte& b) { j = std::to_integer<unsigned>(b); }
-    static void from_json(const json& j, std::byte& b) { b = std::byte{j.get<unsigned char>()}; }
+    static void to_json(json& j, const std::byte& b)
+    {
+        j = std::format("0x{:02X}", std::to_integer<unsigned>(b));
+    }
+    static void from_json(const json& j, std::byte& b)
+    {
+        // std::stoul with base 16 accepts an optional "0x" / "0X" prefix.
+        auto s = j.get<std::string>();
+        b      = std::byte{static_cast<unsigned char>(std::stoul(s, nullptr, 16))};
+    }
 };
 } // namespace nlohmann
 

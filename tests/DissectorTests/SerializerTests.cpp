@@ -83,16 +83,19 @@ TEST_CASE("PacketDescriptor roundtrips through save/load", "[Serializer]")
     std::filesystem::remove(path);
 }
 
-TEST_CASE("FieldDescriptor bytes serialize as a JSON numeric array", "[Serializer]")
+TEST_CASE("FieldDescriptor bytes serialize as uppercase 0xNN hex strings", "[Serializer]")
 {
-    // Confirm the encoding contract (bytes as numbers, not as a base64/hex string).
     FieldDescriptor f{.name = "m", .size = 3, .value = {std::byte{0x01}, std::byte{0xAB}, std::byte{0xFF}}};
     nlohmann::json  j = f;
     REQUIRE(j["value"].is_array());
     REQUIRE(j["value"].size() == 3);
-    REQUIRE(j["value"][0].get<unsigned>() == 0x01u);
-    REQUIRE(j["value"][1].get<unsigned>() == 0xABu);
-    REQUIRE(j["value"][2].get<unsigned>() == 0xFFu);
+    REQUIRE(j["value"][0].get<std::string>() == "0x01");
+    REQUIRE(j["value"][1].get<std::string>() == "0xAB");
+    REQUIRE(j["value"][2].get<std::string>() == "0xFF");
+
+    // And the reverse direction - case-insensitive on input, accepts "0x"-less too.
+    auto back = j.get<FieldDescriptor>();
+    REQUIRE(back.value == f.value);
 }
 
 TEST_CASE("externalSizeCalculation is silently dropped on save", "[Serializer]")
@@ -141,6 +144,6 @@ TEST_CASE("JSON output is human-readable and stable", "[Serializer]")
     REQUIRE(text.find("\"name\": \"X\"") != std::string::npos);
     REQUIRE(text.find("\"fields\"") != std::string::npos);
     REQUIRE(text.find("\"a\"") != std::string::npos);
-    REQUIRE(text.find("16") != std::string::npos); // 0x10 as decimal
-    REQUIRE(text.find("32") != std::string::npos); // 0x20 as decimal
+    REQUIRE(text.find("\"0x10\"") != std::string::npos);
+    REQUIRE(text.find("\"0x20\"") != std::string::npos);
 }
