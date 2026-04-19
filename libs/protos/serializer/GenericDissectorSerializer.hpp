@@ -5,10 +5,10 @@
 #include <nlohmann/json.hpp>
 
 #include <cstddef>
+#include <filesystem>
 #include <format>
 #include <fstream>
 #include <stdexcept>
-#include <string>
 
 // nlohmann does not know std::byte natively. Serialize each byte as a plain
 // unsigned integer; FieldDescriptor::value is therefore a JSON array of numbers.
@@ -39,19 +39,25 @@ NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(FieldDescriptor,
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(PacketDescriptor, fields, name)
 
 template <class T>
-void save(const std::string& path, const T& obj)
+void save(const std::filesystem::path& path, const T& obj)
 {
     std::ofstream os(path);
-    if (!os.is_open()) { throw std::runtime_error(std::format("save: cannot open '{}' for writing", path)); }
+    if (!os.is_open())
+    {
+        throw std::runtime_error(std::format("save: cannot open '{}' for writing", path.string()));
+    }
     nlohmann::json j = obj;
     os << j.dump(2);
 }
 
 template <class T>
-T load(const std::string& path)
+T load(const std::filesystem::path& path)
 {
     std::ifstream is(path);
-    if (!is.is_open()) { throw std::runtime_error(std::format("load: cannot open '{}' for reading", path)); }
+    if (!is.is_open())
+    {
+        throw std::runtime_error(std::format("load: cannot open '{}' for reading", path.string()));
+    }
     nlohmann::json j;
     is >> j;
     return j.get<T>();

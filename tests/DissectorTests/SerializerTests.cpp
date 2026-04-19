@@ -62,11 +62,11 @@ TEST_CASE("PacketDescriptor roundtrips through save/load", "[Serializer]")
 
     auto path = std::filesystem::temp_directory_path() / "prototools_serializer_roundtrip.json";
 
-    protos::dissector::save(path.string(), original);
+    protos::dissector::save(path, original);
     REQUIRE(std::filesystem::exists(path));
     REQUIRE(std::filesystem::file_size(path) > 0);
 
-    auto loaded = protos::dissector::load<PacketDescriptor>(path.string());
+    auto loaded = protos::dissector::load<PacketDescriptor>(path);
 
     REQUIRE(equal_packets(original, loaded));
 
@@ -120,7 +120,7 @@ TEST_CASE("save/load throw on unreachable paths", "[Serializer]")
     PacketDescriptor pd;
 
     // Path under a directory that cannot exist.
-    const std::string bad = "Z:/definitely/not/a/real/dir/out.json";
+    const std::filesystem::path bad = "Z:/definitely/not/a/real/dir/out.json";
     REQUIRE_THROWS_WITH(protos::dissector::save(bad, pd),
                         Catch::Matchers::ContainsSubstring("cannot open"));
     REQUIRE_THROWS_WITH(protos::dissector::load<PacketDescriptor>(bad),
