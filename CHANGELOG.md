@@ -10,8 +10,8 @@ fork follows the same convention.
 
 ## [Unreleased]
 
-Integrated on `dev` from three independent feature branches, each PR-ready
-against `psyinf/protoTools:main`.
+Integrated on `dev` from three independent feature branches and proposed
+upstream as a single PR against `psyinf/protoTools:main`.
 
 ### Added
 
@@ -85,20 +85,6 @@ against `psyinf/protoTools:main`.
 - `GenericPacketInterpreter::EmptyFieldBehavior::TROW_ONCE` is misspelled;
   renaming is an ABI break, so deserves a deprecated alias rather than an
   in-place rename.
-
-### Branch layout
-
-```
-feat/docs-and-examples   — documentation + examples tree + CMake gate
-feat/serializer-port     — GenericDissectorSerializer port + save/load + tests
-feat/little-endian       — FieldInterpreter wiring + tests
-dev                      — all three merged + this CHANGELOG
-main                     — tracks upstream/main, clean
-```
-
-Recommended PR order (smallest → largest): `feat/little-endian`,
-`feat/serializer-port`, `feat/docs-and-examples`. Docs branch last because
-its copy depends on the prior two features being in upstream main.
 
 ## [1.0.0] — 2025-09-29
 
