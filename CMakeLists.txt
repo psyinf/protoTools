@@ -7,6 +7,7 @@ include(cmake/detect_embedded.cmake)
 
 option(ENABLE_TESTING "Enable testing" ON)
 option(BUILD_APPS "Build apps" ON)
+option(PROTOTOOLS_BUILD_EXAMPLES "Build the examples/ tree" ON)
 
 
 include(cmake/PreventInSourceBuilds.cmake)
@@ -26,6 +27,10 @@ endif()
 if (ENABLE_TESTING AND IS_STANDALONE_PROJECT)
     enable_testing()
 	add_subdirectory(tests)
+endif()
+
+if (PROTOTOOLS_BUILD_EXAMPLES AND IS_STANDALONE_PROJECT)
+    add_subdirectory(examples)
 endif()
 
 #install(DIRECTORY

@@ -4,6 +4,8 @@
 #include "FieldInterpretation.hpp"
 #include <protos/dissection/GenericDissector.hpp>
 
+#include <bit>
+
 // #include <datafw/utils/BitConversions.hpp>
 // #include <datafw/utils/Once.hpp>
 // #include <datafw/registries/Registry.hpp>
@@ -146,8 +148,22 @@ protos::interpreter::InterpretationResults protos::interpreter::FieldInterpreter
     // where function and mapper are optional. If no function or mapper is present, the type is used
     // if the function is empty, the input is the type of the field as per description
     auto result = protos::value::Variant{};
-    // the mapper needs a type to work with
-    result = protos::value::as_variant(interpretation.type, data);
+
+    // Honor FieldInterpretation::littleEndian for numeric types. STRING and BYTES
+    // keep stream order; BOOL is single-byte so the flag is a no-op there.
+    // as_variant uses std::bit_cast under the hood, which is host-order. If the
+    // declared wire endianness disagrees with the host, reverse the bytes first.
+    using protos::value::Type;
+    const auto t            = interpretation.type;
+    const bool numeric      = (t == Type::INTEGER || t == Type::UNSIGNED_INTEGER || t == Type::FLOAT);
+    const bool host_le      = (std::endian::native == std::endian::little);
+    const bool needs_swap   = numeric && (interpretation.littleEndian != host_le);
+    if (needs_swap)
+    {
+        std::vector<std::byte> reversed(data.rbegin(), data.rend());
+        result = protos::value::as_variant(t, reversed);
+    }
+    else { result = protos::value::as_variant(t, data); }
 
     // map the result. Mappers allow for type conversion
     if (interpretation.mapper)
