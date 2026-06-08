@@ -91,7 +91,7 @@ void ProtocolDirectoryServer::runRequestServer(std::stop_token st)
         }
         else
         {
-            rep_socket->send(zmq::message_t(std::format("Unknown request: {}. Valid: {}", req, "list")),
+            rep_socket->send(zmq::message_t(fmt::format("Unknown request: {}. Valid: {}", req, "list")),
                              zmq::send_flags::none);
         }
     }

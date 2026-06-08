@@ -1,6 +1,7 @@
 #pragma once
 #include <protos/dissection/FieldData.hpp>
-#include <format>
+#include <algorithm>
+#include <fmt/format.h>
 
 namespace protos::dissector {
 
@@ -16,9 +17,9 @@ struct PacketData
 
     FieldData& get(const std::string& field_name)
     {
-        auto iter = std::ranges::find_if(fields, [&field_name](const auto& field) { return field.name == field_name; });
+        auto iter = std::find_if(fields.begin(), fields.end(), [&field_name](const auto& field) { return field.name == field_name; });
         if (iter != fields.end()) { return *iter; }
-        else { throw std::runtime_error(std::format("Field {} not found in PacketData {}", field_name, name)); }
+        else { throw std::runtime_error(fmt::format("Field {} not found in PacketData {}", field_name, name)); }
     }
 
     // this is a const overload of get, the const_cast is safe here because we are not modifying the object
@@ -27,7 +28,7 @@ struct PacketData
 
     bool has(const std::string& field_name) const
     {
-        return std::ranges::find_if(fields, [&field_name](const auto& field) { return field.name == field_name; }) !=
+        return std::find_if(fields.begin(), fields.end(), [&field_name](const auto& field) { return field.name == field_name; }) !=
                fields.end();
     }
 

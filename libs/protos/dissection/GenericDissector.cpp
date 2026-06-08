@@ -155,7 +155,7 @@ uint32_t protos::dissector::GenericDissector::getSizeFromFieldValue(const protos
         return protos::bytes::to_number<uint64_t>(current_packet.get(field.name).value);
     default:
         throw std::runtime_error(
-            std::format("Unsupported size for field describing a size in field '{}' of GenericDissector '{}' ",
+            fmt::format("Unsupported size for field describing a size in field '{}' of GenericDissector '{}' ",
                         field.name,
                         this->packet_template.getName()));
     }

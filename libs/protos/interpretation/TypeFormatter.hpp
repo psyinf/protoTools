@@ -3,7 +3,7 @@
 #include <protos/interpretation/GenericPacketInterpreter.hpp>
 //#include <datafw/utils/Hashers.hpp>
 
-#include <format>
+#include <fmt/format.h>
 
 #include <vector>
 #include <cstddef>
@@ -144,28 +144,28 @@ inline Variant variant_from_string(Type type, const std::string& data)
     }
 }
 
-inline constexpr std::string variant_to_formatted_string(const Variant& v, const std::string& format_str)
+inline std::string variant_to_formatted_string(const Variant& v, const std::string& format_str)
 {
     return std::visit(
         [&](auto&& arg) -> std::string {
             using T = std::decay_t<decltype(arg)>;
             // as string
-            if constexpr (std::is_same_v<T, std::string>) { return std::vformat(format_str, std::make_format_args(arg)); }
+            if constexpr (std::is_same_v<T, std::string>) { return fmt::vformat(format_str, fmt::make_format_args(arg)); }
             // as integer
-            else if constexpr (std::is_same_v<T, int64_t>) { return std::vformat(format_str, std::make_format_args(arg)); }
+            else if constexpr (std::is_same_v<T, int64_t>) { return fmt::vformat(format_str, fmt::make_format_args(arg)); }
             // as unsigned integer
-            else if constexpr (std::is_same_v<T, uint64_t>) { return std::vformat(format_str, std::make_format_args(arg)); }
+            else if constexpr (std::is_same_v<T, uint64_t>) { return fmt::vformat(format_str, fmt::make_format_args(arg)); }
             // as float
-            else if constexpr (std::is_same_v<T, double>) { return std::vformat(format_str, std::make_format_args(arg)); }
+            else if constexpr (std::is_same_v<T, double>) { return fmt::vformat(format_str, fmt::make_format_args(arg)); }
             // as bool
-            else if constexpr (std::is_same_v<T, bool>) { return std::vformat(format_str, std::make_format_args(arg)); }
+            else if constexpr (std::is_same_v<T, bool>) { return fmt::vformat(format_str, fmt::make_format_args(arg)); }
             // as bytes
             else if constexpr (std::is_same_v<T, std::vector<std::byte>>)
             {
                 std::string result;
                 for (const auto& byte : arg)
                 {
-                    result += std::format("{:02x} ", static_cast<unsigned>(byte));
+                    result += fmt::format("{:02x} ", static_cast<unsigned>(byte));
                 }
                 return result;
             }
@@ -174,7 +174,7 @@ inline constexpr std::string variant_to_formatted_string(const Variant& v, const
         v);
 }
 
-inline constexpr std::string variant_to_string(const Variant& v)
+inline std::string variant_to_string(const Variant& v)
 {
     return std::visit(
         [](auto&& arg) -> std::string {
@@ -182,18 +182,18 @@ inline constexpr std::string variant_to_string(const Variant& v)
             // as string
             if constexpr (std::is_same_v<T, std::string>) { return arg; }
             // as integer
-            else if constexpr (std::is_same_v<T, int64_t>) { return std::format("{}", arg); }
+            else if constexpr (std::is_same_v<T, int64_t>) { return fmt::format("{}", arg); }
             // as unsigned integer
-            else if constexpr (std::is_same_v<T, uint64_t>) { return std::format("{}", arg); }
+            else if constexpr (std::is_same_v<T, uint64_t>) { return fmt::format("{}", arg); }
             // as float
-            else if constexpr (std::is_same_v<T, double>) { return std::format("{}", arg); }
+            else if constexpr (std::is_same_v<T, double>) { return fmt::format("{}", arg); }
             // as bool
             else if constexpr (std::is_same_v<T, bool>) { return arg ? "true" : "false"; }
             // as bytes
             else if constexpr (std::is_same_v<T, std::vector<std::byte>>)
             {
                 throw std::runtime_error("Not implemented");
-                //return std::format("{}", fmt::join(arg, " "));
+                //return fmt::format("{}", fmt::join(arg, " "));
             }
 
             else { static_assert(always_false<T>::value, "non-exhaustive visitor!"); }

@@ -51,7 +51,7 @@ static auto packetDescriptorToBuffer(const protos::dissector::PacketDescriptor& 
         if (field.size == 0) { continue; }
         if (field.size != field.value.size())
         {
-            throw std::runtime_error(std::format("Field {}::{} size mismatch. field size {} vs. field value size {}",
+            throw std::runtime_error(fmt::format("Field {}::{} size mismatch. field size {} vs. field value size {}",
                                                  pd.name,
                                                  field.name,
                                                  field.size,

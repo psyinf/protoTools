@@ -18,7 +18,7 @@
 std::string getFieldValueAsString(std::string_view name, const protos::interpreter::InterpretationResults& context)
 {
     auto it = std::find_if(context.begin(), context.end(), [&](const auto& field) { return field.name == name; });
-    if (it == context.end()) { throw std::runtime_error(std::format("Field {} referenced was not found", name)); }
+    if (it == context.end()) { throw std::runtime_error(fmt::format("Field {} referenced was not found", name)); }
     return protos::value::variant_to_string(it->value);
 }
 #ifdef EXTENDED_INTERPRETER

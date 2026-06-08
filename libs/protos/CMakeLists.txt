@@ -1,5 +1,5 @@
 project(protos)
-set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD 20)
 file(GLOB_RECURSE HEADER_FILES 	CONFIGURE_DEPENDS "*.h*")
 file(GLOB_RECURSE CPP_FILES 	CONFIGURE_DEPENDS "*.cpp")
 
@@ -15,6 +15,8 @@ target_sources(${PROJECT_NAME}
 )
 
 target_link_libraries(${PROJECT_NAME}
+    PUBLIC
+    fmt::fmt
     PUBLIC
     #nlohmann_json::nlohmann_json
 )
